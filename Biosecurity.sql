@@ -1,5 +1,14 @@
 use Biosecurity;
 
+CREATE TABLE IF NOT EXISTS user
+(
+id INT,
+roles varchar(10),
+first_name varchar(30),
+family_name varchar(30),
+pin varchar(30) not null
+);
+
 CREATE TABLE IF NOT EXISTS forester
 (
 forester_id INT auto_increment PRIMARY KEY NOT NULL,
@@ -9,7 +18,8 @@ status_now varchar(8) not null,
 address varchar(500) not null,
 email varchar(300) not null,
 phone varchar(11) not null,
-date_joined date not null
+date_joined date not null,
+pin varchar(30) not null
 );
 
 
@@ -23,7 +33,8 @@ email varchar(300) not null,
 phone varchar(11) not null,
 hire_date date not null,
 staff_position varchar(100) not null,
-department varchar(100) not null
+department varchar(100) not null,
+pin varchar(30) not null
 );
 
 CREATE TABLE IF NOT EXISTS admini
@@ -36,7 +47,8 @@ email varchar(300) not null,
 phone varchar(11) not null,
 hire_date date not null,
 admin_position varchar(100) not null,
-department varchar(100) not null
+department varchar(100) not null,
+pin varchar(30) not null
 );
 
 CREATE TABLE IF NOT EXISTS forestry

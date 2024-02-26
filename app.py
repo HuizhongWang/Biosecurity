@@ -61,7 +61,6 @@ def register():
             flash("Please input your address.","danger")
         elif password == "" or not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password):
             flash("Please input your password in right format.","danger")
-            print(111111)
         elif not date:
             flash("Please input the joined date.","danger")
             
@@ -72,6 +71,7 @@ def register():
             flash("Register successfully!","success")
         colseCursor()
         return redirect(url_for("register"))
+
 
 @app.route("/login")
 def login():
