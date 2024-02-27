@@ -32,13 +32,13 @@ def home():
 @app.route("/register",methods = ["GET","POST"])
 def register():
     connection = getCursor()
-    if request.method == "GET":  
+    # if request.method == "GET":  
         # get the forester id of the current register
-        connection.execute("select max(forester_id) from forester")
-        forester_id = int(connection.fetchone()[0])
-        forester_id += 1
-        return render_template("register.html",forester_id=forester_id)
-    else:       
+    connection.execute("select max(forester_id) from forester")
+    forester_id = int(connection.fetchone()[0])
+    forester_id += 1
+        
+    if request.method == "POST":        
         # get input information
         familyname= request.form.get("familyname").strip()
         firstname= request.form.get("firstname").strip()
@@ -66,17 +66,51 @@ def register():
             
         # insert into database
         else:
-            password = hashing.hash_value(password,salt="abc")
-            connection.execute("insert into forester value(0,%s,%s,'active',%s,%s,%s,%s,%s)",(firstname,familyname,address,email,phone,date,password,))
+            pwd_hash = hashing.hash_value(password,salt="abc")
+            connection.execute("insert into forester value(0,'forester',%s,%s,'1',%s,%s,%s,%s,%s)",(firstname,familyname,address,email,phone,date,pwd_hash,))
             flash("Register successfully!","success")
         colseCursor()
-        return redirect(url_for("register"))
+        # return redirect(url_for("register"))
+    return render_template("register.html",forester_id=forester_id)
 
 
-@app.route("/login")
+@app.route("/login",methods = ["GET","POST"])
 def login():
+    connection = getCursor()
+    if request.method == 'POST' and 'userid' in request.form and 'pwd' in request.form:
+        userid = int(request.form['userid'])
+        print(userid,type(userid))
+        userpwd = request.form['pwd']
+        connection.execute('SELECT * FROM users WHERE forester_id = %s or staff_id = %s', (userid,userid,))
+        # check if the userid is existed
+        id = connection.fetchone()
+        print(id)
+        if id is not None:
+            password = id[3]  # database pwd
+            if hashing.check_value(password, userpwd, salt='abc'):
+            # If account exists in accounts table 
+            # Create session data, we can access this data in other routes
+                session['loggedin'] = True
+                session['roles'] = id[0]
+                if id[1]:
+                    session['userid'] = id[1]
+                else:
+                    session['userid'] = id[2]
+                # Redirect to home page
+                return redirect(url_for('dashboard'))
+            else:
+                #password incorrect
+                flash('Incorrect password!',"danger")
+        else:
+            # Account doesnt exist or username incorrect
+            flash('Incorrect ID number',"danger")
     return render_template("login.html")
 
+
+@app.route("/dashboard",methods = ["GET","POST"])
+def dashboard():
+
+    return render_template("dashboard.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
