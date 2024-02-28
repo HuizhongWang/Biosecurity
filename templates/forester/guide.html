@@ -1,0 +1,32 @@
+{% extends "forester/f_base.html" %}
+
+{% block title %}{{Guide}}{% endblock %}
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Type</th>
+        <th scope="col">Present in NZ</th>
+        <th scope="col">Common Name</th>
+        <th scope="col">Image</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for guide in guide_list %}
+      <tr>
+        <th>{{guide[0]}}</th>
+        <td>{{guide[1]}}</td>
+        <td>{{guide[2]}}</td>
+        <td>{{guide[3]}}</td>
+        <td>
+            <form action="/f_detail" method="post" id="myForm{{guide[0]}}">
+                {{guide[4]}}
+            </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

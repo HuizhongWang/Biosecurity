@@ -3,12 +3,20 @@ import re
 from flask_hashing import Hashing
 from datetime import datetime
 import mysql.connector
-import config
-from datetime import datetime
+import config 
+# from views.admin import admin_blu
+# from views.staff import staff_blu
+from views.forester import forester_blu
 
 app = Flask(__name__)
-hashing = Hashing(app)
+# app.register_blueprint(admin_blu,url_prefix="/admin")
+# app.register_blueprint(staff_blu,url_prefix="/staff")
+app.register_blueprint(forester_blu)
+
 app.secret_key = '123456'
+
+hashing = Hashing(app)
+
 
 # connect database
 def getCursor():
@@ -27,17 +35,11 @@ def colseCursor():
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("index/home.html")
 
 @app.route("/register",methods = ["GET","POST"])
 def register():
     connection = getCursor()
-    # if request.method == "GET":  
-        # get the forester id of the current register
-    connection.execute("select max(forester_id) from forester")
-    forester_id = int(connection.fetchone()[0])
-    forester_id += 1
-        
     if request.method == "POST":        
         # get input information
         familyname= request.form.get("familyname").strip()
@@ -68,10 +70,13 @@ def register():
         else:
             pwd_hash = hashing.hash_value(password,salt="abc")
             connection.execute("insert into forester value(0,'forester',%s,%s,'1',%s,%s,%s,%s,%s)",(firstname,familyname,address,email,phone,date,pwd_hash,))
-            flash("Register successfully!","success")
+            # get the forester id of the current register
+            connection.execute("select max(forester_id) from forester")
+            forester_id = connection.fetchone()[0]
+            flash("Register successfully! Please remember your ID: {}, it will be used for login.".format(forester_id),"success")
         colseCursor()
         # return redirect(url_for("register"))
-    return render_template("register.html",forester_id=forester_id)
+    return render_template("index/register.html")
 
 
 @app.route("/login",methods = ["GET","POST"])
@@ -83,34 +88,29 @@ def login():
         userpwd = request.form['pwd']
         connection.execute('SELECT * FROM users WHERE forester_id = %s or staff_id = %s', (userid,userid,))
         # check if the userid is existed
-        id = connection.fetchone()
+        user = connection.fetchone()
         print(id)
-        if id is not None:
-            password = id[3]  # database pwd
+        if user is not None:
+            password = user[3]  # database pwd
             if hashing.check_value(password, userpwd, salt='abc'):
             # If account exists in accounts table 
             # Create session data, we can access this data in other routes
-                session['loggedin'] = True
-                session['roles'] = id[0]
-                if id[1]:
-                    session['userid'] = id[1]
-                else:
-                    session['userid'] = id[2]
-                # Redirect to home page
-                return redirect(url_for('dashboard'))
+                if user[1]:
+                    session['userid'] = user[1]
+                    return redirect(url_for('forester.index'))
+                # elif user[2] and user[0]=="staff":
+                #     session['userid'] = user[2]
+                #     return redirect(url_for('s_index'))
+                # elif user[2] and user[0]=="admin":
+                #     session['userid'] = user[2]
+                #     return redirect(url_for('a_index'))
             else:
                 #password incorrect
                 flash('Incorrect password!',"danger")
         else:
             # Account doesnt exist or username incorrect
             flash('Incorrect ID number',"danger")
-    return render_template("login.html")
-
-
-@app.route("/dashboard",methods = ["GET","POST"])
-def dashboard():
-
-    return render_template("dashboard.html")
+    return render_template("index/login.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

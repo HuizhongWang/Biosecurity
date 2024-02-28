@@ -1,5 +1,3 @@
-SECRET_KEY = 'faffadfa'
-
 # database connect
 dbuser = "root" # Your MySQL username - likely 'root'
 dbpass = "mina!612" # ---- PUT YOUR PASSWORD HERE ----
