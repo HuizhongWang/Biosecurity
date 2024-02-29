@@ -21,8 +21,8 @@
         <td>{{guide[2]}}</td>
         <td>{{guide[3]}}</td>
         <td>
-            <form action="/f_detail" method="post" id="myForm{{guide[0]}}">
-                {{guide[4]}}
+            <form action="/foreseter/f_detail" method="get">
+              <a href="{{ url_for('forester.f_detail',forestry_id=guide[0])}}"><img class="img-rounded" src="data:;base64,{{ guide[4] }}" width="60%" height="30px"></a>
             </form>
         </td>
       </tr>

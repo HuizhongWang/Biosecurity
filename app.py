@@ -11,7 +11,7 @@ from views.forester import forester_blu
 app = Flask(__name__)
 # app.register_blueprint(admin_blu,url_prefix="/admin")
 # app.register_blueprint(staff_blu,url_prefix="/staff")
-app.register_blueprint(forester_blu)
+app.register_blueprint(forester_blu,url_prefix="/forester")
 
 app.secret_key = '123456'
 
@@ -97,7 +97,8 @@ def login():
             # Create session data, we can access this data in other routes
                 if user[1]:
                     session['userid'] = user[1]
-                    return redirect(url_for('forester.index'))
+                    return redirect(url_for('forester.f_index'))
+                    # return "eeeeeee"
                 # elif user[2] and user[0]=="staff":
                 #     session['userid'] = user[2]
                 #     return redirect(url_for('s_index'))

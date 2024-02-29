@@ -1,0 +1,57 @@
+{% extends "index/base.html" %}
+
+{% block title %}{{Detail}}{% endblock %}
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Type</th>
+        <th scope="col">Present in NZ</th>
+        <th scope="col">Common Name</th>
+        <th scope="col">Scientific name</th>
+        <th scope="col">Image</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for detail in detail_list %}
+      <tr>
+        <th>{{detail[0]}}</th>
+        <td>{{detail[1]}}</td>
+        <td>{{detail[2]}}</td>
+        <td>{{detail[3]}}</td>
+        <td>{{detail[4]}}</td>
+        <td>
+            <img class="img-rounded" src="data:;base64,{{ detail[8] }}" width="70%" height="100px">
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Key characteristics</th>
+        <th scope="col">Biology/Description</th>
+        <th scope="col">Symptoms</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for detail in detail_list %}
+      <tr>
+        <td>{{detail[5]}}</td>
+        <td>{{detail[6]}}</td>
+        <td>{{detail[7]}}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td><a href="">edit</a></td>
+        <td><a href="">edit</a></td>
+        <td><a href="">edit</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+{% endblock %}

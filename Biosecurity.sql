@@ -56,7 +56,7 @@ scientific_name varchar(100) not null ,
 key_charac text,
 biology text,
 symptoms text,
-image_num int not null
+image_num int default 0
 );
 
 
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS images
 image_num INT auto_increment PRIMARY KEY NOT NULL,
 forestry_id INT NOT NULL,
 images mediumblob,
-show_p tinyint,
+show_p tinyint default 0,
 FOREIGN KEY (forestry_id) REFERENCES forestry(forestry_id)
 on update cascade
 ON DELETE CASCADE
