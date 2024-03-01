@@ -84,12 +84,11 @@ def login():
     connection = getCursor()
     if request.method == 'POST' and 'userid' in request.form and 'pwd' in request.form:
         userid = int(request.form['userid'])
-        print(userid,type(userid))
+        session['user_id'] = userid
         userpwd = request.form['pwd']
         connection.execute('SELECT * FROM users WHERE forester_id = %s or staff_id = %s', (userid,userid,))
         # check if the userid is existed
         user = connection.fetchone()
-        print(id)
         if user is not None:
             password = user[3]  # database pwd
             if hashing.check_value(password, userpwd, salt='abc'):
@@ -112,6 +111,11 @@ def login():
             # Account doesnt exist or username incorrect
             flash('Incorrect ID number',"danger")
     return render_template("index/login.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("index/home.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

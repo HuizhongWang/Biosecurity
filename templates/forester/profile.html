@@ -1,0 +1,93 @@
+{% extends "forester/f_base.html" %}
+
+{% block title %}{{Profile}}{% endblock %}
+
+{% block content %}
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">First name</th>
+        <th scope="col">Family name</th>
+        <th scope="col">Address</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Date Joined</th>
+        <th scope="col">Password</th>
+
+      </tr>
+    </thead>
+    <tbody>
+    {% for profile in profile_list %}
+      <tr>
+        <th scope="row">{{profile[0]}}</th>
+        <td>{{profile[2]}}</td>
+        <td>{{profile[3]}}</td>
+        <td>{{profile[5]}}</td>
+        <td>{{profile[6]}}</td>
+        <td>{{profile[7]}}</td>
+        <td>{{profile[8]}}</td>
+        <td>*****</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+<div style="text-align:center">
+    <button class="updateBtn btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" type="button">Edit</button>
+</div>
+
+<form method="post" action="/forester/profile" class="form-horizontal" role="form" id="form_addData" style="margin: 20px;">
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                      &times;
+                  </button>
+                  <h4 class="modal-title" id="myModalLabel">
+                      摸态框标题
+                  </h4>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                      <label for="aa" class="col-sm-3 control-label"> 内容 1</label>
+                      <div class="col-sm-9">
+                          <input type="text" class="form-control" id="aa" name="aa"  disabled="disabled">
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="bb" class="col-sm-3 control-label"> 内容 2</label>
+                      <div class="col-sm-9">
+                          <input type="text" class="form-control" id="bb" name="bb"  disabled="disabled" value="">
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">
+                      关闭
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                          保存修改
+                  </button><span id="tip"> </span>
+              </div>
+          </div>
+      </div>
+  </div>
+  </form>
+
+  <script>
+    $('#myModal').on('show.bs.modal', function (event) {
+        $("textarea[name = refuseTextareaContext]").innerHTML = "";
+        var btnThis = $(event.relatedTarget);// 触发事件的按钮
+        var modal = $(this);// 当前模态框
+        var modalId = btnThis.data ('id');// 解析出 data-id 的内容
+        aa= btnThis.closest ('tr').find ('td').eq (0).text ();// 获取某一列的内容 eq 后面表示列数
+        bb= btnThis.closest('tr').find('td').eq(1).text();
+        $("#aa").val(aa);
+        $("#bb").val(bb);
+    });
+    </script>
+
+
+{% endblock %}

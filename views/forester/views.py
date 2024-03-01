@@ -61,16 +61,32 @@ def f_detail():
         for detail in detail_get:
             detail=list(detail)
             detail[8]= base64.b64encode(detail[8]).decode('ascii')
-            detail_list.append(detail)  
-        return render_template("/forester/detail.html",detail_list=detail_list)
+            detail_list.append(detail) 
+
+        # select all images of the forestry
+        connection.execute("""SELECT images FROM images where forestry_id = %s and show_p=0;""",(forestry_id,))
+        image_get= connection.fetchall()
+        image_list =[]
+        for image in image_get:
+            image=list(image)
+            image[0]= base64.b64encode(image[0]).decode('ascii')
+            image_list.append(image) 
+
+        return render_template("/forester/detail.html",detail_list=detail_list,image_list=image_list)
     else:
         return redirect(url_for('login'))
       
 
 @forester_blu.route("/profile")
 def f_profile():
+    connection = getCursor()
     if session['userid']:
-        return render_template("/forester/profile.html")
+        # get the profile from database
+        user_id = session.get('user_id')
+        print(user_id)
+        connection.execute("""SELECT * FROM forester where  forester_id= %s;""",(user_id,))
+        profile_list= connection.fetchall()
+        return render_template("/forester/profile.html",profile_list=profile_list)
     else:
         return redirect(url_for('login'))
 
