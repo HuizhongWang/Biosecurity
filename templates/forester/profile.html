@@ -37,44 +37,7 @@
     <button class="updateBtn btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" type="button">Edit</button>
 </div>
 
-<form method="post" action="/forester/profile" class="form-horizontal" role="form" id="form_addData" style="margin: 20px;">
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                      &times;
-                  </button>
-                  <h4 class="modal-title" id="myModalLabel">
-                      摸态框标题
-                  </h4>
-              </div>
-              <div class="modal-body">
-                  <div class="form-group">
-                      <label for="aa" class="col-sm-3 control-label"> 内容 1</label>
-                      <div class="col-sm-9">
-                          <input type="text" class="form-control" id="aa" name="aa"  disabled="disabled">
-                      </div>
-                  </div>
-                  <div class="form-group">
-                      <label for="bb" class="col-sm-3 control-label"> 内容 2</label>
-                      <div class="col-sm-9">
-                          <input type="text" class="form-control" id="bb" name="bb"  disabled="disabled" value="">
-                      </div>
-                  </div>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">
-                      关闭
-                  </button>
-                  <button type="submit" class="btn btn-primary">
-                          保存修改
-                  </button><span id="tip"> </span>
-              </div>
-          </div>
-      </div>
-  </div>
-  </form>
+
 
   <script>
     $('#myModal').on('show.bs.modal', function (event) {

@@ -64,7 +64,7 @@ def f_detail():
             detail_list.append(detail) 
 
         # select all images of the forestry
-        connection.execute("""SELECT images FROM images where forestry_id = %s and show_p=0;""",(forestry_id,))
+        connection.execute("""SELECT images FROM images where forestry_id = %s;""",(forestry_id,))
         image_get= connection.fetchall()
         image_list =[]
         for image in image_get:
