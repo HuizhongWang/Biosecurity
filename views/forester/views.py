@@ -1,9 +1,10 @@
 import base64
-from flask import redirect, render_template, request, session, url_for
+import config
+from flask import redirect, render_template, request, session, url_for, flash
 import mysql
-import config 
 import mysql.connector
 from . import forester_blu
+
 
 # connect database
 def getCursor():
@@ -77,16 +78,41 @@ def f_detail():
         return redirect(url_for('login'))
       
 
-@forester_blu.route("/profile")
+@forester_blu.route("/profile",methods = ["GET","POST"])
 def f_profile():
     connection = getCursor()
     if session['userid']:
         # get the profile from database
         user_id = session.get('user_id')
-        print(user_id)
         connection.execute("""SELECT * FROM forester where  forester_id= %s;""",(user_id,))
         profile_list= connection.fetchall()
-        return render_template("/forester/profile.html",profile_list=profile_list)
+
+        if request.method == "GET":
+            return render_template("/forester/profile.html",profile_list=profile_list)
+        else:
+            address= request.form.get("address").strip()
+            email= request.form.get("email").strip()
+            phone= request.form.get("phone").strip()
+            password= request.form.get("password").strip()
+            password_n= request.form.get("password_n").strip()
+            password_c= request.form.get("password_c").strip()
+
+            # if change password,first check the original password,then check the new password and confirm password
+            # if password != None:
+            #     if session['pwd']== password: 
+            #         flash("The original password is wrong.","danger")
+            #     else:
+            #         if password_n == password_c:
+            #             n_hash = hashing.hash_value(password,salt="abc")
+            #             connection.execute("update forester set pin=%s where forester_id=%s",(n_hash,get_id,))  
+            #         else:
+            #             flash("The confirm password is different from the new password.","danger")     
+            
+            # modify other info except password
+            connection.execute("update forester set address=%s,email=%s,phone=%s where forester_id=%s",(address,email,phone,user_id,)) 
+            flash("Modify profile successfully.","success") 
+            return redirect(url_for('forester.f_profile'))
+        
     else:
         return redirect(url_for('login'))
 

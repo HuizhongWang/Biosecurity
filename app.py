@@ -9,15 +9,13 @@ import config
 from views.forester import forester_blu
 
 app = Flask(__name__)
+app.secret_key = '123456'
+hashing = Hashing(app)
 # app.register_blueprint(admin_blu,url_prefix="/admin")
 # app.register_blueprint(staff_blu,url_prefix="/staff")
 app.register_blueprint(forester_blu,url_prefix="/forester")
 
-app.secret_key = '123456'
-
-hashing = Hashing(app)
-
-
+# session['pwd'] = hashing
 # connect database
 def getCursor():
     global dbconn
@@ -66,7 +64,7 @@ def register():
         elif not date:
             flash("Please input the joined date.","danger")
             
-        # insert into database
+        # insert into databases
         else:
             pwd_hash = hashing.hash_value(password,salt="abc")
             connection.execute("insert into forester value(0,'forester',%s,%s,'1',%s,%s,%s,%s,%s)",(firstname,familyname,address,email,phone,date,pwd_hash,))
@@ -92,6 +90,7 @@ def login():
         if user is not None:
             password = user[3]  # database pwd
             if hashing.check_value(password, userpwd, salt='abc'):
+                session['pwd']=userpwd
             # If account exists in accounts table 
             # Create session data, we can access this data in other routes
                 if user[1]:
