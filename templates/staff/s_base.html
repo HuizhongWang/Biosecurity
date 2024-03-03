@@ -11,24 +11,23 @@
 <body>
   <div class="container-fluid p-3 bg-light text-dark">
     <nav>
-      <h1 class="display-5 text-success">Forestry Pest And Disease Biosecurity Guide</h1>
-      <ul class="nav nav-underline">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-            aria-expanded="false">login</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('login') }}">login</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="{{ url_for('register') }}">Register</a></li>
-          </ul>
-        </li>
-      </ul>
+        <h1 class="display-5 text-success">Forestry Pest And Disease Biosecurity Guide</h1>
+        <ul class="nav">
+          <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{ url_for('staff.s_index') }}">Guide</a>
+          </li>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Profile</a>
+              <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('staff.s_profile') }}">My Profile</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('staff.fprofile') }}">Forester Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+              </ul>
+          </li>
+        </ul>
     </nav>
+  
     
   <section class="content">
     
@@ -71,3 +70,5 @@ Array.from(forms).forEach(form => {
 </body>
 
 </html>
+
+  

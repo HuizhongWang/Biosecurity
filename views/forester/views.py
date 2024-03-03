@@ -1,6 +1,7 @@
 import base64
 import config
-from flask import redirect, render_template, request, session, url_for, flash
+import re
+from flask import redirect, render_template, request, session, url_for, flash,g
 import mysql
 import mysql.connector
 from . import forester_blu
@@ -80,10 +81,11 @@ def f_detail():
 
 @forester_blu.route("/profile",methods = ["GET","POST"])
 def f_profile():
+    hashing = g.hashing
     connection = getCursor()
-    if session['userid']:
+    if session['userid'] and session['role'] == "forester":
         # get the profile from database
-        user_id = session.get('user_id')
+        user_id = session.get('userid')
         connection.execute("""SELECT * FROM forester where  forester_id= %s;""",(user_id,))
         profile_list= connection.fetchall()
 
@@ -97,19 +99,34 @@ def f_profile():
             password_n= request.form.get("password_n").strip()
             password_c= request.form.get("password_c").strip()
 
-            # if change password,first check the original password,then check the new password and confirm password
-            # if password != None:
-            #     if session['pwd']== password: 
-            #         flash("The original password is wrong.","danger")
-            #     else:
-            #         if password_n == password_c:
-            #             n_hash = hashing.hash_value(password,salt="abc")
-            #             connection.execute("update forester set pin=%s where forester_id=%s",(n_hash,get_id,))  
-            #         else:
-            #             flash("The confirm password is different from the new password.","danger")     
-            
             # modify other info except password
-            connection.execute("update forester set address=%s,email=%s,phone=%s where forester_id=%s",(address,email,phone,user_id,)) 
+            if re.match(".*@.*",email) and re.match("^\d{1,11}$",phone):
+                connection.execute("update forester set address=%s,email=%s,phone=%s where forester_id=%s",(address,email,phone,user_id,)) 
+            else:
+                flash("Please check the format of email or phone number.","danger")
+                return redirect(url_for('staff.s_profile'))    
+
+            # if modify password
+            pwd_match = re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c)
+            if password_n != None and password_c != None:
+                if session['pwd']!= password:    # if the original password is not correct
+                    flash("The original password is wrong.","danger")
+                    return redirect(url_for('forester.f_profile'))
+                else:
+                    if password_n != password_c:
+                        flash("The twice password is different.","danger")   
+                        return redirect(url_for('forester.f_profile')) 
+                    else:
+                        if pwd_match: 
+                            n_hash = hashing.hash_value(password_c,salt="abc")
+                            connection.execute("update forester set pin=%s where forester_id=%s",(n_hash,user_id,))  
+                        else:
+                            flash("Please input your password in right format.","danger")    
+                            return redirect(url_for('forester.f_profile')) 
+            elif password_n != "" and password_c == "" or password_n == "" and password_c != "":
+                flash("Please confirm your password.","danger")    
+                return redirect(url_for('staff.s_profile')) 
+            
             flash("Modify profile successfully.","success") 
             return redirect(url_for('forester.f_profile'))
         

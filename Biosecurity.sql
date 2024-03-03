@@ -81,6 +81,26 @@ BEGIN
 END;
 //
 
+CREATE TRIGGER update_pin_forester
+AFTER UPDATE ON forester
+FOR EACH ROW
+BEGIN
+    UPDATE users
+    SET pin = NEW.pin
+    WHERE forester_id = NEW.forester_id;
+END;
+//
+
+CREATE TRIGGER update_pin_staff
+AFTER UPDATE ON staff_admin
+FOR EACH ROW
+BEGIN
+    UPDATE users
+    SET pin = NEW.pin
+    WHERE staff_id = NEW.staff_id;
+END;
+//
+
 DELIMITER ;
 
 

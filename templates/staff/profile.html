@@ -1,0 +1,99 @@
+{% extends "staff/s_base.html" %}
+
+{% block title %}{{Guide}}{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">First name</th>
+        <th scope="col">Family name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Hire date</th>
+        <th scope="col">Position</th>
+        <th scope="col">Department</th>
+        <th scope="col">Password</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for profile in staff_list %}
+      <tr>
+        <th scope="row">{{profile[0]}}</th>  <!--id-->
+        <td>{{profile[2]}}</td>              <!--first name-->
+        <td>{{profile[3]}}</td>              <!--family name-->
+        <td>{{profile[5]}}</td>              <!--email-->
+        <td>{{profile[6]}}</td>              <!--phone-->
+        <td>{{profile[7]}}</td>              <!--hire date-->
+        <td>{{profile[8]}}</td>              <!--position-->
+        <td>{{profile[9]}}</td>              <!--department-->
+        <td>********</td>
+        <td>
+          <div style="text-align:center">
+            <button type="button" class="btn btn-primary" onclick="Values('{{ profile[5] }}','{{ profile[6] }}')" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</button>
+         </div>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form class="form-horizontal" style="margin-top: 40px;" action="/staff/profile" method="POST" id="myForm">
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Email</label>
+            <input type="text" class="form-control" name="email" id="email">
+          </div>    
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Phone</label>
+            <input type="text" class="form-control" name="phone" id="phone">
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Original password</label>
+            <input type="text" class="form-control" name="password" id="password" placeholder="If you want to change your password, please input your original password.">
+          </div>
+          <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="message-text" class="col-form-label">New password</label>
+            <input type="text" class="form-control" name="password_n" id="password_n">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="message-text" class="col-form-label">Confirm new password</label>
+            <input type="text" class="form-control" name="password_c" id="password_c">
+          </div>
+          </div>
+        </form>
+        </div>
+      </div>
+
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" form="myForm" >Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function Values(email, phone) {
+    // 将参数值填充到对应的输入框中
+    document.getElementById("email").value = email;
+    document.getElementById("phone").value = phone;
+  }
+</script>
+{% endblock %}

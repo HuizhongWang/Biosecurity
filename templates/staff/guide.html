@@ -1,5 +1,31 @@
-{% extends "base.html" %}
+{% extends "staff/s_base.html" %}
 
 {% block title %}{{Guide}}{% endblock %}
 
-{% block content %}rrrrr{% endblock %}
+{% block content %}
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Type</th>
+        <th scope="col">Present in NZ</th>
+        <th scope="col">Common Name</th>
+        <th scope="col">Image</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for guide in guide_list %}
+      <tr>
+        <th>{{guide[0]}}</th>
+        <td>{{guide[1]}}</td>
+        <td>{{guide[2]}}</td>
+        <td>{{guide[3]}}</td>
+        <td>
+            <form action="/staff/s_detail" method="get">
+              <a href="{{ url_for('staff.s_detail',forestry_id=guide[0])}}"><img class="img-rounded" src="data:;base64,{{ guide[4] }}" width=auto height="30px"></a>
+            </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>{% endblock %}

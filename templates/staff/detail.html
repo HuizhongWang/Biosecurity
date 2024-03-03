@@ -1,7 +1,83 @@
-{% extends "index_base.html" %}
+{% extends "staff/s_base.html" %}
 
 {% block title %}{{Guide}}{% endblock %}
 
 {% block header %}{% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+{% for detail in detail_list %}
+<div style="text-align:center">
+  <button type="button" class="btn btn-primary" onclick="Values('{{ detail[5] }}','{{ detail[6] }}','{{ detail[7]}}')" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</button>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" >Delate</button>
+</div>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Type</th>
+        <th scope="col">Present in NZ</th>
+        <th scope="col">Common Name</th>
+        <th scope="col">Scientific name</th>
+        <th scope="col">Primary Image</th>
+        <th scope="col">All Images</th>
+      </tr>
+    </thead>
+    <thead>
+    </thead>
+    <tbody>
+
+      <tr>
+        <th>{{detail[0]}}</th>
+        <td>{{detail[1]}}</td>
+        <td>{{detail[2]}}</td>
+        <td>{{detail[3]}}</td>
+        <td>{{detail[4]}}</td>
+        <td>
+            <img class="img-rounded" src="data:;base64,{{ detail[8] }}" width=auto height="200px">
+        </td>
+        <td>
+          <div style="height:50px">
+            <div class="h-50 d-inline-block" style="width: 200px;">
+            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner ">
+                {% for images in image_list %}
+                <div class="carousel-item active">
+                  <a href=""><img class="mx-auto d-block" width=auto height="200px"src="data:;base64,{{ images[0] }}"></a>
+                </div>
+                {% endfor %}
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+          </div>
+        </td>
+      </tr>
+     
+    </tbody> 
+  </table>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Key characteristics</th>
+        <th scope="col">Biology/Description</th>
+        <th scope="col">Symptoms</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{detail[5]}}</td>
+        <td>{{detail[6]}}</td>
+        <td>{{detail[7]}}</td>
+      </tr>   
+    </tbody>
+  </table>
+{% endfor %}
+{% endblock %}

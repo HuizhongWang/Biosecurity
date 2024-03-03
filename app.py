@@ -1,21 +1,25 @@
-from flask import Flask,flash,render_template,request,session,redirect,url_for
+from flask import Flask,flash,render_template,request,session,redirect,url_for,g
 import re
 from flask_hashing import Hashing
 from datetime import datetime
 import mysql.connector
 import config 
 # from views.admin import admin_blu
-# from views.staff import staff_blu
+from views.staff import staff_blu
 from views.forester import forester_blu
 
 app = Flask(__name__)
 app.secret_key = '123456'
 hashing = Hashing(app)
+
 # app.register_blueprint(admin_blu,url_prefix="/admin")
-# app.register_blueprint(staff_blu,url_prefix="/staff")
+app.register_blueprint(staff_blu,url_prefix="/staff")
 app.register_blueprint(forester_blu,url_prefix="/forester")
 
-# session['pwd'] = hashing
+@app.before_request
+def before_request():
+    g.hashing = hashing
+
 # connect database
 def getCursor():
     global dbconn
@@ -80,29 +84,32 @@ def register():
 @app.route("/login",methods = ["GET","POST"])
 def login():
     connection = getCursor()
+    # get the login info
     if request.method == 'POST' and 'userid' in request.form and 'pwd' in request.form:
         userid = int(request.form['userid'])
-        session['user_id'] = userid
         userpwd = request.form['pwd']
         connection.execute('SELECT * FROM users WHERE forester_id = %s or staff_id = %s', (userid,userid,))
-        # check if the userid is existed
         user = connection.fetchone()
+
+        # if the userid is existed
         if user is not None:
             password = user[3]  # database pwd
-            if hashing.check_value(password, userpwd, salt='abc'):
+            if hashing.check_value(password, userpwd, salt='abc'): # if the userid and password match
                 session['pwd']=userpwd
             # If account exists in accounts table 
             # Create session data, we can access this data in other routes
                 if user[1]:
                     session['userid'] = user[1]
+                    session['role'] = "forester"
                     return redirect(url_for('forester.f_index'))
-                    # return "eeeeeee"
-                # elif user[2] and user[0]=="staff":
-                #     session['userid'] = user[2]
-                #     return redirect(url_for('s_index'))
+                elif user[2] and user[0]=="staff":
+                    session['userid'] = user[2]
+                    session['role'] = "staff"
+                    return redirect(url_for('staff.s_index'))
                 # elif user[2] and user[0]=="admin":
                 #     session['userid'] = user[2]
-                #     return redirect(url_for('a_index'))
+                #     session['role'] = "admin"
+                #     return redirect(url_for('admin.a_index'))
             else:
                 #password incorrect
                 flash('Incorrect password!',"danger")
@@ -111,10 +118,11 @@ def login():
             flash('Incorrect ID number',"danger")
     return render_template("index/login.html")
 
+
 @app.route("/logout")
 def logout():
-    session.clear()
-    return redirect("index/home.html")
+    session.pop("userid", None) 
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True)
