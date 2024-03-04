@@ -7,8 +7,8 @@
 {% block content %}
 {% for detail in detail_list %}
 <div style="text-align:center">
-  <button type="button" class="btn btn-primary" onclick="Values('{{ detail[5] }}','{{ detail[6] }}','{{ detail[7]}}')" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</button>
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" >Delate</button>
+  <button type="button" class="btn btn-primary" onclick="Values('{{ detail[3]}}','{{ detail[4] }}','{{ detail[5]}}','{{ detail[6] }}','{{ detail[7]}}')" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</button>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deletemodel" >Delete</button>
 </div>
 <table class="table table-striped">
     <thead>
@@ -33,7 +33,7 @@
         <td>{{detail[3]}}</td>
         <td>{{detail[4]}}</td>
         <td>
-            <img class="img-rounded" src="data:;base64,{{ detail[8] }}" width=auto height="200px">
+          <img class="img-rounded" src="data:;base64,{{ detail[8] }}" width=auto height="200px">
         </td>
         <td>
           <div style="height:50px">
@@ -42,7 +42,8 @@
               <div class="carousel-inner ">
                 {% for images in image_list %}
                 <div class="carousel-item active">
-                  <a href=""><img class="mx-auto d-block" width=auto height="200px"src="data:;base64,{{ images[0] }}"></a>
+                  <!-- <img class="mx-auto d-block" width=auto height="200px"src="data:;base64,{{ images[0] }}"> -->
+                  <img class="mx-auto d-block" width=auto height="200px" src="data:;base64,{{ images[0] }}" data-bs-toggle="modal" data-bs-target="#imgmodal">
                 </div>
                 {% endfor %}
               </div>
@@ -79,5 +80,147 @@
       </tr>   
     </tbody>
   </table>
+
+
+<!-- Modal edit-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Detail</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form class="form-horizontal" style="margin-top: 40px;" action="/staff/detail" method="POST" id="myForm">
+          <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="recipient-name" class="col-form-label">Type: </label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="group1" value="pest" {% if detail[1] == 'pest' %} checked {% endif %}>
+              <label class="form-check-label" for="flexRadioDefault1">Pest</label>            
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="group1" value="disease" {% if detail[1] == 'disease' %} checked {% endif %}>
+              <label class="form-check-label" for="flexRadioDefault2">Disease</label>
+            </div>
+          </div>   
+          <div class="col-md-6 mb-3">
+            <label for="message-text" class="col-form-label">Present in NZ: </label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="group2" value="1" {% if detail[2] == 'yes' %} checked {% endif %}>
+              <label class="form-check-label" for="flexRadioDefault1">Yes</label>            
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="group2" value="0" {% if detail[2] == 'no' %} checked {% endif %}>
+              <label class="form-check-label" for="flexRadioDefault2">No</label>
+            </div>
+          </div>
+         </div>
+         <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="message-text" class="col-form-label">Common Name</label>
+            <input type="text" class="form-control" name="common" id="common">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="message-text" class="col-form-label">Scientific Name</label>
+            <input type="text" class="form-control" name="scientific" id="scientific">
+          </div>
+         </div>
+          <div class="mb-3 text-truncate">
+            <label for="message-text" class="col-form-label">Key characteristics</label>
+            <textarea class="form-control" name="key" id="key"></textarea>
+          </div>
+          <div class="mb-3 text-truncate">
+            <label for="message-text" class="col-form-label">Biology/Description</label>
+            <textarea class="form-control" name="biology" id="biology"></textarea>
+          </div>
+          <div class="mb-3 text-truncate">
+            <label for="message-text" class="col-form-label">Symptoms</label>
+            <textarea class="form-control" name="symptoms" id="symptoms"></textarea>
+          </div>
+        </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" form="myForm" name="edit" value="edit">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endfor %}
+
+<!-- Modal delete-->
+<div class="modal fade" id="deletemodel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete the detail</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Do you want to delete this detail?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary"form="myForm" name="delete" value="delete">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal image change-->
+<div class="modal fade" id="imgemodel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete the detail</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Do you want to save this image as the primary image or delete this image?
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Delete</button>
+        <button type="submit" class="btn btn-primary"form="myForm" name="delete" value="delete">Save as Primary Image</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function Values(common,scientific,key,biology,symptoms) {
+    document.getElementById("common").value = common;
+    document.getElementById("scientific").value = scientific;
+    document.getElementById("key").value = key;
+    document.getElementById("biology").value = biology;
+    document.getElementById("symptoms").value = symptoms;
+  }
+
+</script>
+
+<script>
+  // get the radio
+  const radioButtonsGroup1 = document.querySelectorAll('input[name="group1"]');
+  const radioButtonsGroup2 = document.querySelectorAll('input[name="group2"]');
+  
+  radioButtonsGroup1.forEach(function(radioButton) {
+    radioButton.addEventListener('change', function(event) {
+      // get the value of the radiao
+      const selectedValue = document.querySelector('input[name="group1"]:checked').value;
+      console.log('Selected value of group 1:', selectedValue);
+    });
+  });
+
+  radioButtonsGroup2.forEach(function(radioButton) {
+    radioButton.addEventListener('change', function(event) {
+      // get the value of the radiao
+      const selectedValue = document.querySelector('input[name="group2"]:checked').value;
+      console.log('Selected value of group 2:', selectedValue);
+    });
+  });
+</script>
+
 {% endblock %}

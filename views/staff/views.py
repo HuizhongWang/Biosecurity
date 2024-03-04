@@ -46,35 +46,55 @@ def s_index():
         return redirect(url_for('login'))
     
 
-@staff_blu.route("/detail")
+@staff_blu.route("/detail",methods = ["GET","POST"])
 def s_detail():   
     connection = getCursor()
     if session['userid'] and session['role'] == "staff":
-        forestry_id = request.args.get('forestry_id') 
-        connection.execute("""SELECT f.forestry_id,f.forestry_type,
-            case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
-            ,f.common_name,f.scientific_name,f.key_charac,f.biology,f.symptoms,i.images
-            FROM forestry f left join images i
-            on f.forestry_id = i.forestry_id
-            where i.show_p = 1 and f.forestry_id = %s""",(forestry_id,))
-        detail_get = connection.fetchall()
-        # convert blob to base64 encodeing
-        detail_list =[]
-        for detail in detail_get:
-            detail=list(detail)
-            detail[8]= base64.b64encode(detail[8]).decode('ascii')
-            detail_list.append(detail) 
+        forestry_id = request.args.get('forestry_id')     
+        if request.method == 'GET':        
+            connection.execute("""SELECT f.forestry_id,f.forestry_type,
+                case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
+                ,f.common_name,f.scientific_name,f.key_charac,f.biology,f.symptoms,i.images
+                FROM forestry f left join images i
+                on f.forestry_id = i.forestry_id
+                where i.show_p = 1 and f.forestry_id = %s""",(forestry_id,))
+            detail_get = connection.fetchall()
+            # convert blob to base64 encodeing
+            detail_list =[]
+            for detail in detail_get:
+                detail=list(detail)
+                detail[8]= base64.b64encode(detail[8]).decode('ascii')
+                detail_list.append(detail) 
 
-        # select all images of the forestry
-        connection.execute("""SELECT images FROM images where forestry_id = %s;""",(forestry_id,))
-        image_get= connection.fetchall()
-        image_list =[]
-        for image in image_get:
-            image=list(image)
-            image[0]= base64.b64encode(image[0]).decode('ascii')
-            image_list.append(image) 
+            # select all images of the forestry
+            connection.execute("""SELECT images FROM images where forestry_id = %s;""",(forestry_id,))
+            image_get= connection.fetchall()
+            image_list =[]
+            for image in image_get:
+                image=list(image)
+                image[0]= base64.b64encode(image[0]).decode('ascii')
+                image_list.append(image) 
+            return render_template("/staff/detail.html",detail_list=detail_list,image_list=image_list)    
+        else:      
+            if request.values.get("edit") == "edit":
+                common= request.form.get("common")
+                scientific= request.form.get("scientific").strip()
+                key= request.form.get("key").strip()
+                bio= request.form.get("biology").strip()
+                symptoms= request.form.get("symptoms").strip()
+                present = request.form.get('group1')
+                type = request.form.get("group2")
+                connection.execute("""update forestry set 
+                    forestry_type=%s,present_in_nz=%s,common_name=%s,scientific_name=%s,
+                    key_charac=%s, biology=%s, symptoms=%s where forestry_id=%s""",(type,present,common,scientific,key,bio,symptoms,forestry_id,))  
+                print(type,forestry_id,"ooooo")
+                flash("Update successfully!","success")
+               
+            elif request.values.get("delete") == "delete":
+                connection.execute("delete from forestry where forestry_id=%s",(forestry_id,))  
+                flash("Delete successfully!","success")
 
-        return render_template("/staff/detail.html",detail_list=detail_list,image_list=image_list)
+            return redirect(url_for('staff.s_detail'))                
     else:
         return redirect(url_for('login'))
       
