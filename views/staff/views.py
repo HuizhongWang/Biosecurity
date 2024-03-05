@@ -82,8 +82,8 @@ def s_detail():
                 key= request.form.get("key").strip()
                 bio= request.form.get("biology").strip()
                 symptoms= request.form.get("symptoms").strip()
-                present = request.form.get('group1')
-                type = request.form.get("group2")
+                type = request.form.get('group1')
+                present = request.form.get("group2")
                 connection.execute("""update forestry set 
                     forestry_type=%s,present_in_nz=%s,common_name=%s,scientific_name=%s,
                     key_charac=%s, biology=%s, symptoms=%s where forestry_id=%s""",(type,present,common,scientific,key,bio,symptoms,forestry_id,))  
