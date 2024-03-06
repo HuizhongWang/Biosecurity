@@ -9,7 +9,7 @@
 <div style="text-align:center">
   <!-- <button type="button" class="btn btn-primary" onclick="Values('{{ detail[3]}}','{{ detail[4] }}','{{ detail[5]}}','{{ detail[6] }}','{{ detail[7]}}')" data-bs-toggle="modal" data-bs-target="#exampleModal{{ detail[0] }}" >Edit</button> -->
   <button type="button" class="btn btn-primary" onclick="Values('{{ detail[0] }}','{{ detail[3]|urlencode }}','{{ detail[4]|urlencode }}','{{ detail[5]|urlencode }}','{{ detail[6]|urlencode }}','{{ detail[7]|urlencode }}')" data-bs-toggle="modal" data-bs-target="#exampleModal{{ detail[0] }}">Edit</button>
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deletemodel" >Delete</button>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deletemodel{{ detail[0] }}" >Delete</button>
 </div>
 <table class="table table-striped">
     <thead>
