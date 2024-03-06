@@ -92,7 +92,7 @@ def s_detail():
                 symptoms= request.form.get("symptoms").strip()
                 type = request.form.get('group1')
                 present = request.form.get("group2")
-
+                print(forid,88888888888888888)
                 connection.execute("""update forestry set 
                     forestry_type=%s,present_in_nz=%s,common_name=%s,scientific_name=%s,
                     key_charac=%s, biology=%s, symptoms=%s where forestry_id=%s""",(type,present,common,scientific,key,bio,symptoms,forid,))  
@@ -100,6 +100,8 @@ def s_detail():
                 flash("Update successfully!","success")
                
             elif request.values.get("delete") == "delete":
+                forid= request.form.get("id")
+                print(forid,9999999999999999999999)
                 connection.execute("delete from forestry where forestry_id=%s",(forid,))  
                 flash("Delete successfully!","success")
             
