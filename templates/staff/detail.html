@@ -9,7 +9,7 @@
 <div style="text-align:center">
   <!-- <button type="button" class="btn btn-primary" onclick="Values('{{ detail[3]}}','{{ detail[4] }}','{{ detail[5]}}','{{ detail[6] }}','{{ detail[7]}}')" data-bs-toggle="modal" data-bs-target="#exampleModal{{ detail[0] }}" >Edit</button> -->
   <button type="button" class="btn btn-primary" onclick="Values('{{ detail[0] }}','{{ detail[3]|urlencode }}','{{ detail[4]|urlencode }}','{{ detail[5]|urlencode }}','{{ detail[6]|urlencode }}','{{ detail[7]|urlencode }}')" data-bs-toggle="modal" data-bs-target="#exampleModal{{ detail[0] }}">Edit</button>
-  <button type="button" class="btn btn-primary" onclick="Valuesdel('{{ detail[0] }}')" data-bs-toggle="modal" data-bs-target="#deletemodel{{ detail[0] }}" >Delete</button>
+  <!-- <button type="button" class="btn btn-primary" onclick="Valuesdel('{{ detail[0] }}')" data-bs-toggle="modal" data-bs-target="#deletemodel{{ detail[0] }}" >Delete</button> -->
 </div>
 <table class="table table-striped">
     <thead>
@@ -145,6 +145,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary" form="myForm" name="edit" value="edit">Save changes</button>
+        <button type="submit" class="btn btn-primary" form="myForm" name="delete" value="delete">delate</button>
       </div>
     </div>
   </div>
@@ -152,7 +153,7 @@
 
 
 <!-- Modal delete-->
-<div class="modal fade" id="deletemodel{{ detail[0] }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="deletemodel{{ detail[0] }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -171,7 +172,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- Modal image change-->
 <!-- <div class="modal fade" id="imgemodel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -222,9 +223,6 @@
   //   document.getElementById("biology").value = biology;
   //   document.getElementById("symptoms").value = symptoms;
   // }
-  function Valuesdel(id) {
-    document.getElementById("id").value = id;
-  }
   
   function Values(idnum,common, scientific, key, biology, symptoms) {
     common = decodeURIComponent(common);
@@ -240,7 +238,6 @@
     document.getElementById("biology").value = biology;
     document.getElementById("symptoms").value = symptoms;
 }
-
 
 </script>
 
