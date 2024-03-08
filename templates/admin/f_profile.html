@@ -1,0 +1,42 @@
+{% extends "admin/a_base.html" %}
+
+{% block title %}{{Forester}}{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">First name</th>
+        <th scope="col">Family name</th>
+        <th scope="col">Status</th>
+        <th scope="col">Address</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Date Joined</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for profile in forester_list %}
+      <tr>
+        <th scope="row">{{profile[0]}}</th>
+        <td>{{profile[2]}}</td>
+        <td>{{profile[3]}}</td>
+        <td>
+          {% if profile[4] == 1 %}
+          active
+          {% else %}
+          inactive
+          {% endif %}
+        </td>
+        <td>{{profile[5]}}</td>
+        <td>{{profile[6]}}</td>
+        <td>{{profile[7]}}</td>
+        <td>{{profile[8]}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

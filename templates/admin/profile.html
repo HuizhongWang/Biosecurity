@@ -1,0 +1,159 @@
+{% extends "admin/a_base.html" %}
+
+{% block title %}{{Guide}}{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Role</th>
+        <th scope="col">First name</th>
+        <th scope="col">Family name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Hire date</th>
+        <th scope="col">Position</th>
+        <th scope="col">Department</th>
+        <th scope="col">Status</th>
+        <th scope="col">Password</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for profile in staff_list %}
+      <tr>
+        <th scope="row">{{profile[0]}}</th>  <!--id-->
+        <td>{{profile[1]}}</td>              <!--Role-->
+        <td>{{profile[2]}}</td>              <!--first name-->
+        <td>{{profile[3]}}</td>              <!--family name-->
+        <td>{{profile[5]}}</td>              <!--email-->
+        <td>{{profile[6]}}</td>              <!--phone-->
+        <td>{{profile[7]}}</td>              <!--hire date-->
+        <td>{{profile[8]}}</td>              <!--position-->
+        <td>{{profile[9]}}</td>              <!--department-->
+        <td>                                 <!--status--> 
+          {% if profile[4] == 1 %}
+            active
+          {% else %}
+            inactive
+          {% endif %}  
+        </td>             
+        <td>********</td>
+        <td>
+          <div style="text-align:center">
+            <button type="button" class="btn btn-primary" onclick="Values('{{ profile[0] }}','{{ profile[1] }}','{{ profile[2] }}','{{ profile[3] }}','{{ profile[5] }}','{{ profile[6] }}','{{ profile[7] }}','{{ profile[8] }}','{{ profile[9] }}','{{ profile[4] }}')" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</button>
+         </div>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form class="form-horizontal" style="margin-top: 40px;" action="/admin/profile" method="POST" id="myForm">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="message-text" class="col-form-label">ID</label>
+              <input type="text" class="form-control" name="a_id" id="a_id" readonly>
+            </div>  
+            <div class="col-md-6 mb-3">
+              <label for="message-text" class="col-form-label">Role</label>
+              <input type="text" class="form-control" name="a_role" id="a_role">
+            </div>  
+          </div> 
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="message-text" class="col-form-label">First name</label>
+              <input type="text" class="form-control" name="a_first" id="a_first">
+            </div>  
+            <div class="col-md-6 mb-3">
+              <label for="message-text" class="col-form-label">Family name</label>
+              <input type="text" class="form-control" name="a_family" id="a_family">
+            </div>  
+          </div> 
+          <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="message-text" class="col-form-label">Email</label>
+            <input type="text" class="form-control" name="a_email" id="a_email">
+          </div>    
+          <div class="col-md-6 mb-3">
+            <label for="message-text" class="col-form-label">Phone</label>
+            <input type="text" class="form-control" name="a_phone" id="a_phone">
+          </div>
+        </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="message-text" class="col-form-label">Hire Date</label>
+              <input type="date" class="form-control" name="a_date" id="a_date">
+            </div>  
+            <div class="col-md-6 mb-3">
+              <label for="message-text" class="col-form-label">Position</label>
+              <input type="text" class="form-control" name="a_ps" id="a_ps">
+            </div>  
+          </div> 
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="message-text" class="col-form-label">Department</label>
+              <input type="text" class="form-control" name="a_de" id="a_de">
+            </div>  
+            <div class="col-md-6 mb-3">
+              <label for="message-text" class="col-form-label">Status</label>
+              <input type="text" class="form-control" name="a_sta" id="a_sta">
+            </div>
+            </div> 
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Original password</label>
+              <input type="text" class="form-control" name="a_pass" id="a_pass" placeholder="If you want to change your password, please input your original password.">
+            </div>
+          <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="message-text" class="col-form-label">New password</label>
+            <input type="text" class="form-control" name="a_passn" id="a_passn">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="message-text" class="col-form-label">Confirm new password</label>
+            <input type="text" class="form-control" name="a_passc" id="a_passc">
+          </div>
+          </div>
+        </form>
+        </div>
+      </div>
+
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" form="myForm" >Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  
+  function Values(a_id,a_role,a_first,a_family,a_email,a_phone,a_date,a_ps,a_de,a_sta) {
+    document.getElementById("a_id").value = a_id;
+    document.getElementById("a_role").value = a_role;
+    document.getElementById("a_first").value = a_first;
+    document.getElementById("a_family").value = a_family;
+    document.getElementById("a_email").value = a_email;
+    document.getElementById("a_phone").value = a_phone;
+    document.getElementById("a_date").value = a_date;
+    document.getElementById("a_ps").value = a_ps;
+    document.getElementById("a_de").value = a_de;
+    document.getElementById("a_sta").value = a_sta;
+  }
+</script>
+{% endblock %}

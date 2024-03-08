@@ -4,7 +4,8 @@ from flask_hashing import Hashing
 from datetime import datetime
 import mysql.connector
 import config 
-# from views.admin import admin_blu
+
+from views.admin import admin_blu
 from views.staff import staff_blu
 from views.forester import forester_blu
 
@@ -12,7 +13,7 @@ app = Flask(__name__)
 app.secret_key = '123456'
 hashing = Hashing(app)
 
-# app.register_blueprint(admin_blu,url_prefix="/admin")
+app.register_blueprint(admin_blu,url_prefix="/admin")
 app.register_blueprint(staff_blu,url_prefix="/staff")
 app.register_blueprint(forester_blu,url_prefix="/forester")
 
@@ -106,10 +107,10 @@ def login():
                     session['userid'] = user[2]
                     session['role'] = "staff"
                     return redirect(url_for('staff.s_index'))
-                # elif user[2] and user[0]=="admin":
-                #     session['userid'] = user[2]
-                #     session['role'] = "admin"
-                #     return redirect(url_for('admin.a_index'))
+                elif user[2] and user[0]=="admin":
+                    session['userid'] = user[2]
+                    session['role'] = "admin"
+                    return redirect(url_for('admin.a_index'))
             else:
                 #password incorrect
                 flash('Incorrect password!',"danger")

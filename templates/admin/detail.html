@@ -1,4 +1,4 @@
-{% extends "staff/s_base.html" %}
+{% extends "admin/a_base.html" %}
 
 {% block title %}{{Detail}}{% endblock %}
 
@@ -7,7 +7,6 @@
 {% block content %}
 {% for detail in detail_list %}
 <div style="text-align:center">
-  <!-- <button type="button" class="btn btn-primary" onclick="Values('{{ detail[3]}}','{{ detail[4] }}','{{ detail[5]}}','{{ detail[6] }}','{{ detail[7]}}')" data-bs-toggle="modal" data-bs-target="#exampleModal{{ detail[0] }}" >Edit</button> -->
   <button type="button" class="btn btn-primary" onclick="Values('{{ detail[0] }}','{{ detail[3]|urlencode }}','{{ detail[4]|urlencode }}','{{ detail[5]|urlencode }}','{{ detail[6]|urlencode }}','{{ detail[7]|urlencode }}')" data-bs-toggle="modal" data-bs-target="#exampleModal{{ detail[0] }}">Edit</button>
   <button type="button" class="btn btn-primary" onclick="Valuesdel('{{ detail[0] }}')" data-bs-toggle="modal" data-bs-target="#deletemodel{{ detail[0] }}" >Delete</button>
 </div>
@@ -87,7 +86,7 @@
       </div>
       <div class="modal-body">
         <div class="container-fluid">
-          <form class="form-horizontal" style="margin-top: 40px;" action="/staff/detail" method="POST" id="myForm">
+          <form class="form-horizontal" style="margin-top: 40px;" action="/admin/detail" method="POST" id="myForm">
             <div class="col-md-6 mb-3">
               <label for="idnum" class="col-form-label">ID</label>
               <input type="text" class="form-control" name="idnum" id="idnum" readonly>
@@ -161,7 +160,7 @@
       <div class="modal-body">
         Do you want to delete this detail?
       </div>
-      <form class="form-horizontal" style="margin-top: 40px;" action="/staff/detail" method="POST" id="myForm1">
+      <form class="form-horizontal" style="margin-top: 40px;" action="/admin/detail" method="POST" id="myForm1">
         <input type="hidden" class="form-control" name="id" id="id">
       </form>
       <div class="modal-footer">
@@ -183,11 +182,11 @@
       <div class="modal-body">
         Do you want to Save this image as the primary image or Delete this image?
       </div>
-      <form class="form-horizontal" style="margin-top: 40px;" action="/staff/detail" method="POST" id="myForm2">
+      <form class="form-horizontal" style="margin-top: 40px;" action="/admin/detail" method="POST" id="myForm2">
         <input type="hidden" class="form-control" name="img" id="img">
         <input type="hidden" class="form-control" name="forestry" id="forestry">
       </form>
-      <form class="form-horizontal" style="margin-top: 40px;" action="/staff/detail" method="POST" id="myForm3">
+      <form class="form-horizontal" style="margin-top: 40px;" action="/admin/detail" method="POST" id="myForm3">
         <input type="hidden" class="form-control" name="img1" id="img1">
         <input type="hidden" class="form-control" name="forestry1" id="forestry1">
       </form>
@@ -239,6 +238,7 @@
     document.getElementById("biology").value = biology;
     document.getElementById("symptoms").value = symptoms;
 }
+
 
 function Valuesdel(id) {
     document.getElementById("id").value = id;

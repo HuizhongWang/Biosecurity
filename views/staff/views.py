@@ -23,9 +23,34 @@ def colseCursor():
      connection.close()
 
 
-# # get forestry data
-# def forestry_get(forestry_id):
-#     connection = getCursor()
+# get forestry data
+def forestry_get(forestry_id):
+    global detail_list,image_list
+    connection = getCursor()
+    connection.execute("""SELECT f.forestry_id,f.forestry_type,
+                        case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
+                        ,f.common_name,f.scientific_name,f.key_charac,f.biology,f.symptoms,i.images
+                        FROM forestry f left join images i
+                        on f.forestry_id = i.forestry_id
+                        where i.show_p = 1 and f.forestry_id = %s""",(forestry_id,))
+    detail_get = connection.fetchall()
+
+    # convert blob to base64 encodeing
+    detail_list =[]
+    for detail in detail_get:
+        detail=list(detail)
+        detail[8]= base64.b64encode(detail[8]).decode('ascii')
+        detail_list.append(detail) 
+
+    # select all images of the forestry
+    connection.execute("""SELECT image_num,forestry_id,images FROM images where forestry_id = %s and show_p=0;""",(forestry_id,))
+    image_get= connection.fetchall()
+    image_list =[]
+    for image in image_get:
+        image=list(image)
+        image[2]= base64.b64encode(image[2]).decode('ascii')
+        image_list.append(image) 
+
     
 @staff_blu.route("/index",methods = ["GET","POST"])
 def s_index():
@@ -58,29 +83,7 @@ def s_detail():
         forestry_id = request.args.get('forestry_id')   
         # forestry_get(forestry_id)
         if request.method == 'GET':                   
-            connection.execute("""SELECT f.forestry_id,f.forestry_type,
-                        case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
-                        ,f.common_name,f.scientific_name,f.key_charac,f.biology,f.symptoms,i.images
-                        FROM forestry f left join images i
-                        on f.forestry_id = i.forestry_id
-                        where i.show_p = 1 and f.forestry_id = %s""",(forestry_id,))
-            detail_get = connection.fetchall()
-
-            # convert blob to base64 encodeing
-            detail_list =[]
-            for detail in detail_get:
-                detail=list(detail)
-                detail[8]= base64.b64encode(detail[8]).decode('ascii')
-                detail_list.append(detail) 
-
-            # select all images of the forestry
-            connection.execute("""SELECT image_num,forestry_id,images FROM images where forestry_id = %s and show_p=0;""",(forestry_id,))
-            image_get= connection.fetchall()
-            image_list =[]
-            for image in image_get:
-                image=list(image)
-                image[2]= base64.b64encode(image[2]).decode('ascii')
-                image_list.append(image) 
+            forestry_get(forestry_id)
             return render_template("/staff/detail.html",detail_list=detail_list,image_list=image_list)    
         else:  
             # edit the detail 
@@ -102,8 +105,6 @@ def s_detail():
             # delete the detail 
             elif request.values.get("delete") == "delete":
                 forid= request.form.get("id")
-                print(forid,999999)
-                # forid= request.form.get("idnum")
                 connection.execute("delete from forestry where forestry_id=%s",(forid,))  
                 flash("Delete successfully!","success")
 
@@ -114,41 +115,16 @@ def s_detail():
                 connection.execute("update images set show_p=0 where forestry_id=%s",(forid,))
                 connection.execute("update images set show_p=1 where image_num=%s",(img,))
                 flash("Change primary picture successfully!","success")
-                print(img,forid,7777777777777777)
 
+            # delete picture
             elif request.values.get("delimg") == "delimg":
                 img = request.form.get("img")
                 forid = request.form.get("forestry")
                 connection.execute("delete from images where image_num=%s",(img,))
                 flash("Delete picture successfully!","success")
-                print(img,forid,555555555555555)
 
-            # show the detail after all change
-            connection.execute("""SELECT f.forestry_id,f.forestry_type,
-                        case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
-                        ,f.common_name,f.scientific_name,f.key_charac,f.biology,f.symptoms,i.images
-                        FROM forestry f left join images i
-                        on f.forestry_id = i.forestry_id
-                        where i.show_p = 1 and f.forestry_id = %s""",(forid,))
-            detail_get = connection.fetchall()
-
-            # convert blob to base64 encodeing
-            detail_list =[]
-            for detail in detail_get:
-                detail=list(detail)
-                detail[8]= base64.b64encode(detail[8]).decode('ascii')
-                detail_list.append(detail) 
-
-            # select all images of the forestry
-            connection.execute("""SELECT image_num,forestry_id,images FROM images where forestry_id = %s and show_p=0;""",(forid,))
-            image_get= connection.fetchall()
-            image_list =[]
-            for image in image_get:
-                image=list(image)
-                image[2]= base64.b64encode(image[2]).decode('ascii')
-                image_list.append(image) 
-
-            # return redirect(url_for('staff.s_detail'))       
+            # get the data from database again after all change
+            forestry_get(forid)
             return render_template("/staff/detail.html",detail_list=detail_list,image_list=image_list)          
     else:
         return redirect(url_for('login'))
