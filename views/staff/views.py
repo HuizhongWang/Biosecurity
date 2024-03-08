@@ -74,17 +74,18 @@ def s_detail():
                 detail_list.append(detail) 
 
             # select all images of the forestry
-            connection.execute("""SELECT images FROM images where forestry_id = %s;""",(forestry_id,))
+            connection.execute("""SELECT image_num,forestry_id,images FROM images where forestry_id = %s and show_p=0;""",(forestry_id,))
             image_get= connection.fetchall()
             image_list =[]
             for image in image_get:
                 image=list(image)
-                image[0]= base64.b64encode(image[0]).decode('ascii')
+                image[2]= base64.b64encode(image[2]).decode('ascii')
                 image_list.append(image) 
             return render_template("/staff/detail.html",detail_list=detail_list,image_list=image_list)    
-        else:    
+        else:  
+            # edit the detail 
             if request.values.get("edit") == "edit":
-                forid= request.form.get("idnum")
+                forid= request.form.get("idnum") 
                 common= request.form.get("common")
                 scientific= request.form.get("scientific").strip()
                 key= request.form.get("key").strip()
@@ -97,13 +98,32 @@ def s_detail():
                     key_charac=%s, biology=%s, symptoms=%s where forestry_id=%s""",(type,present,common,scientific,key,bio,symptoms,forid,))  
                 print(type,forid,"ooooo")
                 flash("Update successfully!","success")
-               
+
+            # delete the detail 
             elif request.values.get("delete") == "delete":
-                # forid= request.form.get("id")
-                forid= request.form.get("idnum")
+                forid= request.form.get("id")
+                print(forid,999999)
+                # forid= request.form.get("idnum")
                 connection.execute("delete from forestry where forestry_id=%s",(forid,))  
                 flash("Delete successfully!","success")
-            
+
+            # change picture
+            elif request.values.get("save") == "save":
+                img = request.form.get("img1")
+                forid = request.form.get("forestry1")
+                connection.execute("update images set show_p=0 where forestry_id=%s",(forid,))
+                connection.execute("update images set show_p=1 where image_num=%s",(img,))
+                flash("Change primary picture successfully!","success")
+                print(img,forid,7777777777777777)
+
+            elif request.values.get("delimg") == "delimg":
+                img = request.form.get("img")
+                forid = request.form.get("forestry")
+                connection.execute("delete from images where image_num=%s",(img,))
+                flash("Delete picture successfully!","success")
+                print(img,forid,555555555555555)
+
+            # show the detail after all change
             connection.execute("""SELECT f.forestry_id,f.forestry_type,
                         case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
                         ,f.common_name,f.scientific_name,f.key_charac,f.biology,f.symptoms,i.images
@@ -120,12 +140,12 @@ def s_detail():
                 detail_list.append(detail) 
 
             # select all images of the forestry
-            connection.execute("""SELECT images FROM images where forestry_id = %s;""",(forid,))
+            connection.execute("""SELECT image_num,forestry_id,images FROM images where forestry_id = %s and show_p=0;""",(forid,))
             image_get= connection.fetchall()
             image_list =[]
             for image in image_get:
                 image=list(image)
-                image[0]= base64.b64encode(image[0]).decode('ascii')
+                image[2]= base64.b64encode(image[2]).decode('ascii')
                 image_list.append(image) 
 
             # return redirect(url_for('staff.s_detail'))       
