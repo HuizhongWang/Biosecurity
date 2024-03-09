@@ -47,7 +47,6 @@
          </div>
         </td>
       </tr>
-
     </tbody>
 </table>
 
@@ -61,145 +60,144 @@
       </div>
       <div class="modal-body">
         <div class="container-fluid">
-        <form class="form-horizontal" style="margin-top: 40px;" action="/admin/profile" method="POST" id="a_myForm">
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="message-text" class="col-form-label">ID</label>
-              <input type="text" class="form-control" name="a_id" id="a_id" readonly>
-            </div>  
-            <div class="col-md-6 mb-3">
-              <label for="message-text" class="col-form-label" >Role</label>
-              <select class="form-select" id="a_role" name="a_role">
-                <option value="forester" {% if profile[1]== "forester" %} selected {% endif %}>forester</option>
-                <option value="staff" {% if profile[1]== "staff" %} selected {% endif %}>staff</option>
-                <option value="admin" {% if profile[1]== "admin" %} selected {% endif %}>admin</option>
-              </select>
-            </div>  
-          </div> 
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="message-text" class="col-form-label">First name</label>
-              <input type="text" class="form-control" name="a_first" id="a_first">
-            </div>  
-            <div class="col-md-6 mb-3">
-              <label for="message-text" class="col-form-label">Family name</label>
-              <input type="text" class="form-control" name="a_family" id="a_family">
-            </div>  
-          </div> 
-          <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="message-text" class="col-form-label">Email</label>
-            <input type="text" class="form-control" name="a_email" id="a_email">
-          </div>    
-          <div class="col-md-6 mb-3">
-            <label for="message-text" class="col-form-label">Phone</label>
-            <input type="text" class="form-control" name="a_phone" id="a_phone">
-          </div>
-        </div>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="message-text" class="col-form-label">Hire Date</label>
-              <input type="date" class="form-control" name="a_date" id="a_date">
-            </div>  
-            <div class="col-md-6 mb-3">
-              <label for="message-text" class="col-form-label">Position</label>
-              <select class="form-select" id="a_ps" name="a_ps">
-                <option value="manager" {% if profile[8]== "manager" %} selected {% endif %}>manager</option>
-                <option value="technician" {% if profile[8]== "technician" %} selected {% endif %}>technician</option>
-                <option value="clerk" {% if profile[8]== "clerk" %} selected {% endif %}>salesperson</option>
-              </select>
-            </div> 
-            </div>  
-          </div> 
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="message-text" class="col-form-label">Department</label>
-              <select class="form-select" id="depar" name="depar">
-                <option value="HR" {% if profile[9]== "HR" %} selected {% endif %}>HR</option>
-                <option value="IT" {% if profile[9]== "IT" %} selected {% endif %}>IT</option>
-                <option value="business" {% if profile[9]== "business" %} selected {% endif %}>business</option>
-              </select>
-            </div>  
-            <div class="col-md-6 mb-3">
-              <div><label for="message-text" class="col-form-label">Status</label></div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="group1" value=1 {% if profile[4]== 1 %} checked {% endif %}>
-                <label class="form-check-label" for="group1">active</label>
+          <form class="form-horizontal needs-validation" style="margin-top: 40px;" action="/admin/profile" method="POST" id="a_myForm" >
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">ID</label>
+                <input type="text" class="form-control" name="a_id" id="a_id" readonly>
               </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="group1" value=0 {% if profile[4]== 0 %} checked {% endif %}>
-                <label class="form-check-label" for="group1">inactive</label>
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">Role</label>
+                <select class="form-select" id="a_role" name="a_role">
+                  <option value="staff" {% if profile[1]=="staff" %} selected {% endif %}>staff</option>
+                  <option value="admin" {% if profile[1]=="admin" %} selected {% endif %}>admin</option>
+                </select>
               </div>
             </div>
-          </div> 
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">First name</label>
+                <input type="text" class="form-control" name="a_first" id="a_first">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">Family name</label>
+                <input type="text" class="form-control" name="a_family" id="a_family">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">Email</label>
+                <input type="email" class="form-control" name="a_email" id="a_email">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">Phone</label>
+                <input type="tel" maxlength="11" class="form-control" name="a_phone" id="a_phone" placeholder="Not exceed 11 digits.">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">Hire Date</label>
+                <input type="date" class="form-control" name="a_date" id="a_date">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">Position</label>
+                <select class="form-select" id="a_ps" name="a_ps">
+                  <option value="manager" {% if profile[8]=="manager" %} selected {% endif %}>manager</option>
+                  <option value="technician" {% if profile[8]=="technician" %} selected {% endif %}>technician</option>
+                  <option value="clerk" {% if profile[8]=="clerk" %} selected {% endif %}>salesperson</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">Department</label>
+                <select class="form-select" id="depar" name="depar">
+                  <option value="HR" {% if profile[9]=="HR" %} selected {% endif %}>HR</option>
+                  <option value="IT" {% if profile[9]=="IT" %} selected {% endif %}>IT</option>
+                  <option value="business" {% if profile[9]=="business" %} selected {% endif %}>business</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div><label for="message-text" class="col-form-label">Status</label></div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="group1" value=1 {% if profile[4]==1 %} checked {% endif %}>
+                  <label class="form-check-label" for="group1">active</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="group1" value=0 {% if profile[4]==0 %} checked {% endif %}>
+                  <label class="form-check-label" for="group1">inactive</label>
+                </div>
+              </div>
+            </div>
             <div class="mb-3">
               <label for="message-text" class="col-form-label">Original password</label>
-              <input type="text" class="form-control" name="a_pass" id="a_pass" placeholder="If you want to change your password, please input your original password.">
+              <input type="text" class="form-control" name="a_pass" id="a_pass"
+                placeholder="If you want to change your password, please input your original password.">
             </div>
-          <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="message-text" class="col-form-label">New password</label>
-            <input type="text" class="form-control" name="a_passn" id="a_passn">
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="message-text" class="col-form-label">Confirm new password</label>
-            <input type="text" class="form-control" name="a_passc" id="a_passc">
-          </div>
-          </div>
-        </form>
-        </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">New password</label>
+                <input type="text" class="form-control" name="a_passn" id="a_passn">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="message-text" class="col-form-label">Confirm new password</label>
+                <input type="text" class="form-control" name="a_passc" id="a_passc">
+              </div>
+            </div>
+          </form>
+       </div>
       </div>
-
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary" form="a_myForm" >Save changes</button>
+        <button type="submit" class="btn btn-primary" form="a_myForm">Save changes</button>
       </div>
-    </div>
+   </div>
+  </div>
 </div>
 {% endfor %}
 
 
 <script>
-  // get the radio of status_now
-  const radioButtonsGroup1 = document.querySelectorAll('input[name="group1"]');  
-  
-  radioButtonsGroup1.forEach(function(radioButton) {
-    radioButton.addEventListener('change', function(event) {
-      // get the value of the radiao
-      const selectedValue = document.querySelector('input[name="group1"]:checked').value;
-      console.log('Selected value of group 1:', selectedValue);
-    });
+// get the radio of status_now (radio)
+const radioButtonsGroup1 = document.querySelectorAll('input[name="group1"]');  
+
+radioButtonsGroup1.forEach(function(radioButton) {
+  radioButton.addEventListener('change', function(event) {
+    // get the value of the radiao
+    const selectedValue = document.querySelector('input[name="group1"]:checked').value;
+    console.log('Selected value of group 1:', selectedValue);
+  });
+});
+
+
+// get the info from table (input)
+function Values(a_id,a_first,a_family,a_email,a_phone,a_date) {
+  document.getElementById("a_id").value = a_id;
+  document.getElementById("a_first").value = a_first;
+  document.getElementById("a_family").value = a_family;
+  document.getElementById("a_email").value = a_email;
+  document.getElementById("a_phone").value = a_phone;
+  document.getElementById("a_date").value = a_date;
+}
+
+
+  // get the department,roles,position info (selected)
+  $(document).ready(function() {
+  $('#depar').on('change', function () {
+    var selectedValue = $(this).val();
+    console.log(selectedValue);
   });
 
-  
-  // get the info from table
-  function Values(a_id,a_first,a_family,a_email,a_phone,a_date) {
-    document.getElementById("a_id").value = a_id;
-    document.getElementById("a_first").value = a_first;
-    document.getElementById("a_family").value = a_family;
-    document.getElementById("a_email").value = a_email;
-    document.getElementById("a_phone").value = a_phone;
-    document.getElementById("a_date").value = a_date;
-  }
+  $('#a_role').on('change', function () {
+    var selectedValue1 = $(this).val();
+    console.log(selectedValue1);
+  });
 
-
-   // get the department,roles,position info (selected)
-  //  $(document).ready(function() {
-  //   $('#depar').on('change', function () {
-  //     var selectedValue = $(this).val();
-  //     console.log(selectedValue);
-  //   });
-
-  //   $('#a_role').on('change', function () {
-  //     var selectedValue1 = $(this).val();
-  //     console.log(selectedValue1);
-  //   });
-
-  //   $('#a_ps').on('change', function () {
-  //     var selectedValue2 = $(this).val();
-  //     console.log(selectedValue2);
-  //   });
-  // });
+  $('#a_ps').on('change', function () {
+    var selectedValue2 = $(this).val();
+    console.log(selectedValue2);
+  });
+});
 
 </script>
 {% endblock %}

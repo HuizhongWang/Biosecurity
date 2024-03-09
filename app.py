@@ -31,10 +31,6 @@ def getCursor():
     dbconn = connection.cursor()
     return dbconn
 
-# close database
-def colseCursor():
-     dbconn.close()
-     connection.close()
 
 @app.route("/")
 def home():
@@ -50,8 +46,9 @@ def register():
         address= request.form.get("address")
         email= request.form.get("email").strip()
         phone= request.form.get("phone").strip()
-        password= request.form.get("password").strip()
         date= request.form.get("date").strip()
+        password= request.form.get("password").strip()
+        pass_con= request.form.get("pass_confirm").strip()
 
         # check input information
         if familyname == "" or not re.match("^.{1,30}$",familyname):
@@ -64,21 +61,23 @@ def register():
             flash("Please input the phone number in right format.","danger")
         elif not address:
             flash("Please input your address.","danger")
-        elif password == "" or not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password):
+        elif password != pass_con:
+            flash("The second password input is incorrect. Please enter it again.","danger")
+        elif pass_con == "" or not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",pass_con):
             flash("Please input your password in right format.","danger")
         elif not date:
             flash("Please input the joined date.","danger")
             
         # insert into databases
         else:
-            pwd_hash = hashing.hash_value(password,salt="abc")
+            pwd_hash = hashing.hash_value(pass_con,salt="abc")
             connection.execute("insert into forester value(0,'forester',%s,%s,'1',%s,%s,%s,%s,%s)",(firstname,familyname,address,email,phone,date,pwd_hash,))
             # get the forester id of the current register
             connection.execute("select max(forester_id) from forester")
             forester_id = connection.fetchone()[0]
             flash("Register successfully! Please remember your ID: {}, it will be used for login.".format(forester_id),"success")
-        colseCursor()
-        # return redirect(url_for("register"))
+            # return redirect(url_for("register"))
+
     return render_template("index/register.html")
 
 
@@ -120,6 +119,7 @@ def login():
         else:
             # Account doesnt exist or username incorrect
             flash('Incorrect ID number',"danger")
+
     return render_template("index/login.html")
 
 

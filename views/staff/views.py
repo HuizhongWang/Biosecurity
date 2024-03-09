@@ -150,7 +150,7 @@ def s_profile():
             password_c= request.form.get("password_c").strip()
 
             # modify other info except password
-            if re.match(".*@.*",email) and re.match("^\d{1,11}$",phone):
+            if re.match(".*@.*",email) and re.match("^(?!00)\d{11}$",phone):
                 connection.execute("update staff_admin set email=%s,phone=%s where staff_id=%s",(email,phone,user_id,)) 
             else:
                 flash("Please check the format of email or phone number.","danger")
@@ -176,6 +176,10 @@ def s_profile():
             elif password_n != "" and password_c == "" or password_n == "" and password_c != "":
                 flash("Please confirm your password.","danger")    
                 return redirect(url_for('staff.s_profile')) 
+            elif password != None:
+                if session['pwd']!= password:    # if the original password is not correct
+                    flash("The original password is wrong.","danger")
+                    return redirect(url_for('admin.a_profile'))
         
             flash("Modify profile successfully.","success") 
             return redirect(url_for('staff.s_profile'))
@@ -189,7 +193,7 @@ def fprofile():
     connection = getCursor()
     if session['userid'] and session['role'] == "staff" and session['status']== 1:
         # get the forester list
-        connection.execute("SELECT * FROM forester;")
+        connection.execute("SELECT * FROM forester where status_now = 1;")
         forester_list= connection.fetchall()
         return render_template("/staff/f_profile.html",forester_list=forester_list)
     else:

@@ -16,12 +16,6 @@ def getCursor():
     dbconn = connection.cursor()
     return dbconn
 
-# close database
-def colseCursor():
-     dbconn.close()
-     connection.close()
-
-
 # get forestry data
 def forestry_get(forestry_id):
     global detail_list,image_list
@@ -68,7 +62,6 @@ def a_index():
             guide=list(guide)
             guide[4]= base64.b64encode(guide[4]).decode('ascii')
             guide_list.append(guide)       
-        
         return render_template("admin/guide.html",guide_list=guide_list)
 
     else:
@@ -142,7 +135,6 @@ def a_profile():
         if request.method == "GET":
             return render_template("/admin/profile.html",staff_list=staff_list)
         else:
-            print(111111111)
             department= request.form.get("depar")
             status= request.form.get("group1")
             position = request.form.get("a_ps")
@@ -156,13 +148,12 @@ def a_profile():
             password_n= request.form.get("a_passn").strip()
             password_c= request.form.get("a_passc").strip()
 
-            print(department,status,position)
-
             # modify other info except password
-            if re.match(".*@.*",email) and re.match("^\d{1,11}$",phone):
+            if re.match(".*@.*",email) and re.match("^(?!00)\d{11}$",phone):
                 connection.execute("""update staff_admin set roles=%s,first_name=%s,family_name=%s,
                     status_now=%s,email=%s,phone=%s,hire_date=%s,staff_position=%s,department=%s
                     where staff_id=%s""",(roles,first,family,status,email,phone,date,position,department,user_id,)) 
+                connection.execute("update users set status_now=%s where staff_id = %s;",(status,user_id,))            
             else:
                 flash("Please check the format of email or phone number.","danger")
                 return redirect(url_for('admin.a_profile'))
@@ -173,12 +164,12 @@ def a_profile():
                 if session['pwd']!= password:    # if the original password is not correct
                     flash("The original password is wrong.","danger")
                     return redirect(url_for('admin.a_profile'))
-                else:
-                    if password_n != password_c:
-                        flash("The twice password is different.","danger")   
+                else:  # if the priginal password is correct
+                    if password_n != password_c:  # if the confrim password is wrong 
+                        flash("The second password input is incorrect. Please enter it again.","danger")   
                         return redirect(url_for('admin.a_profile')) 
-                    else:
-                        if pwd_match: 
+                    else:  # if the confirm password is right
+                        if pwd_match:  # check the format new password is right
                             n_hash = hashing.hash_value(password_c,salt="abc")
                             connection.execute("update staff_admin set pin=%s where staff_id=%s",(n_hash,user_id,))  
                         else:
@@ -187,7 +178,11 @@ def a_profile():
             elif password_n != "" and password_c == "" or password_n == "" and password_c != "":
                 flash("Please confirm your password.","danger")    
                 return redirect(url_for('admin.a_profile')) 
-        
+            elif password != "":
+                if session['pwd']!= password:    # if the original password is not correct
+                    flash("The original password is wrong.","danger")
+                    return redirect(url_for('admin.a_profile'))
+
             flash("Modify profile successfully.","success") 
             return redirect(url_for('admin.a_profile'))
         
@@ -195,23 +190,106 @@ def a_profile():
         return redirect(url_for('login'))
 
 
-@admin_blu.route("/fprofile")
+@admin_blu.route("/fprofile",methods = ["GET","POST"])
 def f_profile():
     connection = getCursor()
+    hashing = g.hashing
     if session['userid'] and session['role'] == "admin" and session['status']== 1:
-        # get the forester list
-        connection.execute("SELECT * FROM forester;")
-        forester_list= connection.fetchall()
-        return render_template("/admin/f_profile.html",forester_list=forester_list)
+        if request.method == "GET":
+            # get the forester list
+            connection.execute("SELECT * FROM forester where status_now = 1;")
+            forester_list= connection.fetchall()
+            return render_template("/admin/f_profile.html",forester_list=forester_list)
+        else:
+            # add forester
+            if request.values.get("add_f") == "add_f":
+                # get input information
+                familyname= request.form.get("familyname").strip()
+                firstname= request.form.get("firstname").strip()
+                address= request.form.get("address")
+                email= request.form.get("email").strip()
+                phone= request.form.get("phone").strip()
+                date= request.form.get("date").strip()
+                password= request.form.get("password").strip()
+                pass_con= request.form.get("pass_confirm").strip()
+
+                # check input information
+                if familyname == "" or not re.match("^.{1,30}$",familyname):
+                    flash("Please input the family name (Not exceeding 30 letters).","danger")
+                elif firstname == "" and not re.match("^.{0,30}$",firstname):
+                    flash("The family name should not exceed 30 letters. Please input again","danger")
+                elif not re.match(".*@.*",email):
+                    flash("Please input the right email.","danger")
+                elif not re.match("^\d{1,11}$",phone):
+                    flash("Please input the phone number in right format.","danger")
+                elif not address:
+                    flash("Please input your address.","danger")
+                elif password != pass_con:
+                    flash("The second password input is incorrect. Please enter it again.","danger")
+                elif pass_con == "" or not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",pass_con):
+                    flash("Please input your password in right format.","danger")
+                elif not date:
+                    flash("Please input the joined date.","danger")
+                    
+                # insert into databases
+                else:
+                    pwd_hash = hashing.hash_value(pass_con,salt="abc")
+                    connection.execute("insert into forester value(0,'forester',%s,%s,'1',%s,%s,%s,%s,%s)",(firstname,familyname,address,email,phone,date,pwd_hash,))
+                    # get the forester id of the current register
+                    connection.execute("select max(forester_id) from forester")
+                    forester_id = connection.fetchone()[0]
+                    flash("Add successfully! Forester ID: {} ".format(forester_id),"success")
+                    return redirect(url_for('admin.f_profile')) 
+                
+            # edit forester
+            elif request.values.get("edit_f") == "edit_f":
+                f_id = request.form.get("f_id")
+                status= request.form.get("group1")
+                first = request.form.get("f_first").strip()
+                family = request.form.get("f_family").strip()
+                email= request.form.get("f_email").strip()
+                phone= request.form.get("f_phone").strip()
+                date= request.form.get("f_date").strip()
+                password_n= request.form.get("f_passn").strip()
+                password_c= request.form.get("f_passc").strip()
+
+                # modify other info except password
+                if re.match(".*@.*",email) and re.match("^(?!00)\d{11}$",phone):
+                    connection.execute("""update forester set first_name=%s,family_name=%s,
+                        status_now=%s,email=%s,phone=%s,date_joined=%s 
+                        where forester_id=%s""",(first,family,status,email,phone,date,f_id,))  
+                else:
+                    flash("Please check the format of email or phone number.","danger")
+                    return redirect(url_for('admin.f_profile'))
+                
+                # if change password
+                if password_n == password_c != "" and re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
+                    n_hash = hashing.hash_value(password_c,salt="abc")
+                    connection.execute("update forester set pin=%s where forester_id=%s",(n_hash,f_id,))  
+                elif password_n == password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
+                    flash("Please input your password in right format.","danger")    
+                    return redirect(url_for('admin.f_profile')) 
+                
+                flash("Modify the profile successfully.","success") 
+                return redirect(url_for('admin.f_profile')) 
+            
+            # delete forester
+            elif request.values.get("del_f") == "del_f":
+                f_id = request.form.get("id_del")
+                connection.execute("update forester set status_now = 0 where forester_id=%s",(f_id,))  
+                connection.execute("update users set status_now = 0 where forester_id=%s",(f_id,))  
+                flash("Delete the forester successfully.","success") 
+                return redirect(url_for('admin.f_profile')) 
     else:
         return redirect(url_for('login'))
 
-@admin_blu.route("/sprofile")
+
+@admin_blu.route("/sprofile",methods = ["GET","POST"])
 def s_profile():
     connection = getCursor()
     if session['userid'] and session['role'] == "admin" and session['status']== 1:
         # get the forester list
-        connection.execute("SELECT * FROM forester;")
+        connection.execute("SELECT * FROM forester where status_now = 1;")
         forester_list= connection.fetchall()
         return render_template("/admin/s_profile.html",forester_list=forester_list)
     else:

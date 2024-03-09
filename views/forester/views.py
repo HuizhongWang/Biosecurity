@@ -17,14 +17,10 @@ def getCursor():
     dbconn = connection.cursor()
     return dbconn
 
-# close database
-def colseCursor():
-     dbconn.close()
-     connection.close()
 
 @forester_blu.route("/index",methods = ["GET","POST"])
 def f_index():
-    if session['userid']:
+    if session['userid'] and session['role'] == "forester" and session['status']== 1:
         connection = getCursor()
         connection.execute("""SELECT f.forestry_id,f.forestry_type,
             case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
@@ -49,7 +45,7 @@ def f_index():
 @forester_blu.route("/detail")
 def f_detail():   
     connection = getCursor()
-    if session['userid']:
+    if session['userid'] and session['role'] == "forester" and session['status']== 1:
         forestry_id = request.args.get('forestry_id') 
         connection.execute("""SELECT f.forestry_id,f.forestry_type,
             case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
@@ -83,7 +79,7 @@ def f_detail():
 def f_profile():
     hashing = g.hashing
     connection = getCursor()
-    if session['userid'] and session['role'] == "forester":
+    if session['userid'] and session['role'] == "forester" and session['status']== 1:
         # get the profile from database
         user_id = session.get('userid')
         connection.execute("""SELECT * FROM forester where  forester_id= %s;""",(user_id,))
@@ -108,13 +104,13 @@ def f_profile():
 
             # if modify password
             pwd_match = re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c)
-            if password_n != None and password_c != None:
+            if password_n != "" and password_c != "":
                 if session['pwd']!= password:    # if the original password is not correct
                     flash("The original password is wrong.","danger")
                     return redirect(url_for('forester.f_profile'))
                 else:
                     if password_n != password_c:
-                        flash("The twice password is different.","danger")   
+                        flash("The second password input is incorrect. Please enter it again.","danger")   
                         return redirect(url_for('forester.f_profile')) 
                     else:
                         if pwd_match: 
@@ -126,6 +122,10 @@ def f_profile():
             elif password_n != "" and password_c == "" or password_n == "" and password_c != "":
                 flash("Please confirm your password.","danger")    
                 return redirect(url_for('staff.s_profile')) 
+            elif password != "":
+                if session['pwd']!= password:    # if the original password is not correct
+                    flash("The original password is wrong.","danger")
+                    return redirect(url_for('forester.f_profile'))
             
             flash("Modify profile successfully.","success") 
             return redirect(url_for('forester.f_profile'))

@@ -5,75 +5,76 @@
 {% block content %}
  
 <!-- <div class="container"> -->
-    <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col-md-auto">
-                <div style="text-align: center">
-                <h5>Forester Register</h5>
-                </div>
-                <form class="needs-validation" action="/register" method="POST" id="myForm">
-                    <!-- <div class="row">
-                        <div class="col">
-                            <label for="staticEmail" class="col-form-label fw-bold">Forester ID: {{forester_id}} (Please
-                                remember your ID number.) </label>
-                        </div>
-                    </div> -->
-                    <div class="row">
-                        <div class="col-6">
-                            <label class="form-label">First name</label>
-                            <input type="text" class="form-control text-capitalize" name="firstname" required>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">Family name</label>
-                            <input type="text" class="form-control text-capitalize" name="familyname" required>
-                        </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-6">
-                            <label class="form-label">Address</label>
-                            <input type="text" name="address" class="form-control" required>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" required>
-                        </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-6">
-                            <label class="form-label">Phone</label>
-                            <input type="tel" maxlength="11" class="form-control" name="phone"
-                                placeholder="Not exceed 11 digits." required>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" aria-describedby="emailHelp"
-                                required>
-                            <div id="emailHelp" class="form-text">Your password must be 8-20 characters long and have a mix
-                                of character types.</div>
-                        </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-6">
-                            <label class="form-label">Date joined</label>
-                            <input type="date" name="date" class="form-control" required>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-check" style="padding:35px 25px">
-                                <input type="checkbox" class="form-check-input" id="inlineFormCheck" required>
-                                <label class="form-check-label" for="inlineFormCheck">Check me out</label>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div style="text-align: center; padding:10px">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+            <div style="text-align: center">
+            <h5>Forester Register</h5>
             </div>
+            <form class="needs-validation" action="/register" method="POST" id="myForm">
+                <!-- <div class="row">
+                    <div class="col">
+                        <label for="staticEmail" class="col-form-label fw-bold">Forester ID: {{forester_id}} (Please
+                            remember your ID number.) </label>
+                    </div>
+                </div> -->
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label">First name</label>
+                        <input type="text" class="form-control text-capitalize" name="firstname" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Family name</label>
+                        <input type="text" class="form-control text-capitalize" name="familyname" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label">Address</label>
+                        <input type="text" name="address" class="form-control" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" maxlength="11" class="form-control" name="phone" placeholder="Not exceed 11 digits." required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Date joined</label>
+                        <input type="date" name="date" class="form-control" required>
+                       
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" aria-describedby="emailHelp"
+                            required>
+                        <div id="emailHelp" class="form-text">Your password must be 8-20 characters long and have a mix of character types.</div>  
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Password Confirm</label>
+                        <input type="password" name="pass_confirm" class="form-control" required>         
+                    </div>
+                </div>
+
+                <div class="form-check" style="padding:35px 25px">
+                    <input type="checkbox" class="form-check-input" id="inlineFormCheck" required>
+                    <label class="form-check-label" for="inlineFormCheck">Check me out</label>
+                </div>
+                <div style="text-align: center; padding:10px">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
 {% endblock %}
