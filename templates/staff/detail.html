@@ -192,7 +192,7 @@
         <input type="hidden" class="form-control" name="forestry1" id="forestry1">
       </form>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-secondary" form="myForm2" name="delimg" value="delimg">Delete</button>
+        <button type="submit" class="btn btn-danger" form="myForm2" name="delimg" value="delimg">Delete</button>
         <button type="submit" class="btn btn-primary"form="myForm3" name="save" value="save">Save as Primary Image</button>
       </div>
     </div>
@@ -203,8 +203,8 @@
 
 <script>
   // get the radio
-  const radioButtonsGroup1 = document.querySelectorAll('input[name="group1"]');
-  const radioButtonsGroup2 = document.querySelectorAll('input[name="group2"]');
+  const radioButtonsGroup1 = document.querySelectorAll('input[name="group1"]');  // type
+  const radioButtonsGroup2 = document.querySelectorAll('input[name="group2"]');  // present in nz
   var iddd = document.getElementById("common").value
   console.log(iddd)
   
@@ -224,7 +224,8 @@
     });
   });
 
-  
+
+  // get the info when edit
   function Values(idnum,common, scientific, key, biology, symptoms) {
     common = decodeURIComponent(common);
     scientific = decodeURIComponent(scientific);
@@ -240,11 +241,12 @@
     document.getElementById("symptoms").value = symptoms;
 }
 
+// get the info when delete
 function Valuesdel(id) {
     document.getElementById("id").value = id;
 }
 
-
+// get the info when edit images
 function Valuesimg(img,forestry,img1,forestry1) {
     document.getElementById("img").value = img;
     document.getElementById("forestry").value = forestry;

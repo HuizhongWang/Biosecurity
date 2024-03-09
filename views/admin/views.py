@@ -53,7 +53,7 @@ def forestry_get(forestry_id):
     
 @admin_blu.route("/index",methods = ["GET","POST"])
 def a_index():
-    if session['userid'] and session['role'] == "admin":
+    if session['userid'] and session['role'] == "admin" and session['status']== 1:
         connection = getCursor()
         connection.execute("""SELECT f.forestry_id,f.forestry_type,
             case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
@@ -78,7 +78,7 @@ def a_index():
 @admin_blu.route("/detail",methods = ["GET","POST"])
 def a_detail():   
     connection = getCursor()
-    if session['userid'] and session['role'] == "admin":
+    if session['userid'] and session['role'] == "admin" and session['status']== 1:
         forestry_id = request.args.get('forestry_id')   
         # forestry_get(forestry_id)
         if request.method == 'GET':                   
@@ -133,7 +133,7 @@ def a_detail():
 def a_profile():
     hashing = g.hashing
     connection = getCursor()
-    if session['userid'] and session['role'] == "admin":
+    if session['userid'] and session['role'] == "admin" and session['status']== 1:
         # get the profile from database
         user_id = session.get('userid')
         connection.execute("""SELECT * FROM staff_admin where staff_id= %s;""",(user_id,))
@@ -142,15 +142,27 @@ def a_profile():
         if request.method == "GET":
             return render_template("/admin/profile.html",staff_list=staff_list)
         else:
-            email= request.form.get("email").strip()
-            phone= request.form.get("phone").strip()
-            password= request.form.get("password").strip()
-            password_n= request.form.get("password_n").strip()
-            password_c= request.form.get("password_c").strip()
+            print(111111111)
+            department= request.form.get("depar")
+            status= request.form.get("group1")
+            position = request.form.get("a_ps")
+            roles = request.form.get("a_role")
+            first = request.form.get("a_first").strip()
+            family = request.form.get("a_family").strip()
+            email= request.form.get("a_email").strip()
+            phone= request.form.get("a_phone").strip()
+            date= request.form.get("a_date").strip()
+            password= request.form.get("a_pass").strip()
+            password_n= request.form.get("a_passn").strip()
+            password_c= request.form.get("a_passc").strip()
+
+            print(department,status,position)
 
             # modify other info except password
             if re.match(".*@.*",email) and re.match("^\d{1,11}$",phone):
-                connection.execute("update staff_admin set email=%s,phone=%s where staff_id=%s",(email,phone,user_id,)) 
+                connection.execute("""update staff_admin set roles=%s,first_name=%s,family_name=%s,
+                    status_now=%s,email=%s,phone=%s,hire_date=%s,staff_position=%s,department=%s
+                    where staff_id=%s""",(roles,first,family,status,email,phone,date,position,department,user_id,)) 
             else:
                 flash("Please check the format of email or phone number.","danger")
                 return redirect(url_for('admin.a_profile'))
@@ -186,21 +198,23 @@ def a_profile():
 @admin_blu.route("/fprofile")
 def f_profile():
     connection = getCursor()
-    if session['userid'] and session['role'] == "admin":
+    if session['userid'] and session['role'] == "admin" and session['status']== 1:
         # get the forester list
         connection.execute("SELECT * FROM forester;")
         forester_list= connection.fetchall()
-
-    return render_template("/admin/f_profile.html",forester_list=forester_list)
+        return render_template("/admin/f_profile.html",forester_list=forester_list)
+    else:
+        return redirect(url_for('login'))
 
 @admin_blu.route("/sprofile")
 def s_profile():
     connection = getCursor()
-    if session['userid'] and session['role'] == "admin":
+    if session['userid'] and session['role'] == "admin" and session['status']== 1:
         # get the forester list
         connection.execute("SELECT * FROM forester;")
         forester_list= connection.fetchall()
-
-    return render_template("/admin/s_profile.html",forester_list=forester_list)
+        return render_template("/admin/s_profile.html",forester_list=forester_list)
+    else:
+        return redirect(url_for('login'))
 
        

@@ -54,7 +54,7 @@ def forestry_get(forestry_id):
     
 @staff_blu.route("/index",methods = ["GET","POST"])
 def s_index():
-    if session['userid'] and session['role'] == "staff":
+    if session['userid'] and session['role'] == "staff" and session['status']== 1:
         connection = getCursor()
         connection.execute("""SELECT f.forestry_id,f.forestry_type,
             case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
@@ -79,7 +79,7 @@ def s_index():
 @staff_blu.route("/detail",methods = ["GET","POST"])
 def s_detail():   
     connection = getCursor()
-    if session['userid'] and session['role'] == "staff":
+    if session['userid'] and session['role'] == "staff" and session['status']== 1:
         forestry_id = request.args.get('forestry_id')   
         # forestry_get(forestry_id)
         if request.method == 'GET':                   
@@ -134,7 +134,7 @@ def s_detail():
 def s_profile():
     hashing = g.hashing
     connection = getCursor()
-    if session['userid'] and session['role'] == "staff":
+    if session['userid'] and session['role'] == "staff" and session['status']== 1:
         # get the profile from database
         user_id = session.get('userid')
         connection.execute("""SELECT * FROM staff_admin where staff_id= %s;""",(user_id,))
@@ -187,11 +187,14 @@ def s_profile():
 @staff_blu.route("/fprofile")
 def fprofile():
     connection = getCursor()
-    if session['userid'] and session['role'] == "staff":
+    if session['userid'] and session['role'] == "staff" and session['status']== 1:
         # get the forester list
         connection.execute("SELECT * FROM forester;")
         forester_list= connection.fetchall()
+        return render_template("/staff/f_profile.html",forester_list=forester_list)
+    else:
+        return redirect(url_for('login'))
 
-    return render_template("/staff/f_profile.html",forester_list=forester_list)
+    
 
        

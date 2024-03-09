@@ -102,14 +102,17 @@ def login():
                 if user[1]:
                     session['userid'] = user[1]
                     session['role'] = "forester"
+                    session['status'] = user[4]
                     return redirect(url_for('forester.f_index'))
                 elif user[2] and user[0]=="staff":
                     session['userid'] = user[2]
                     session['role'] = "staff"
+                    session['status'] = user[4]
                     return redirect(url_for('staff.s_index'))
                 elif user[2] and user[0]=="admin":
                     session['userid'] = user[2]
                     session['role'] = "admin"
+                    session['status'] = user[4]
                     return redirect(url_for('admin.a_index'))
             else:
                 #password incorrect
