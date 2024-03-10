@@ -71,7 +71,8 @@ def register():
         # insert into databases
         else:
             pwd_hash = hashing.hash_value(pass_con,salt="abc")
-            connection.execute("insert into forester value(0,'forester',%s,%s,'1',%s,%s,%s,%s,%s)",(firstname,familyname,address,email,phone,date,pwd_hash,))
+            connection.execute("insert into forester values(0,default,%s,%s,1,%s,%s,%s,%s,%s)",(firstname,familyname,address,email,phone,date,pwd_hash,))
+            # connection.execute("INSERT INTO forester (first_name, family_name, address, email, phone, date_joined, pin) VALUES (%s, %s, %s, %s, %s, %s, %s)", (firstname, familyname, address, email, phone, date, pwd_hash))
             # get the forester id of the current register
             connection.execute("select max(forester_id) from forester")
             forester_id = connection.fetchone()[0]

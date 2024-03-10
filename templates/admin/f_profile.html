@@ -39,9 +39,9 @@
         <td>{{profile[8]}}</td>
         <td>
           <div style="text-align:center">
-            <button type="submit" class="btn btn-primary" onclick="Values('{{ profile[0] }}','{{ profile[2] }}','{{ profile[3] }}','{{ profile[5] }}','{{ profile[6] }}','{{ profile[7] }}','{{ profile[8] }}')" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</button>
-            <button type="submit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleAdd" >Add</button>
-            <button type="submit" class="btn btn-danger" onclick="Valuesdelete('{{ profile[0] }}')" data-bs-toggle="modal" data-bs-target="#exampleDelete{{ profile[0] }}" >Delete</button>
+            <button type="submit" class="btn btn-primary btn-sm" onclick="Values('{{ profile[0] }}','{{ profile[2] }}','{{ profile[3] }}','{{ profile[5] }}','{{ profile[6] }}','{{ profile[7] }}','{{ profile[8] }}')" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</button>
+            <button type="submit" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleAdd" >Add</button>
+            <button type="submit" class="btn btn-danger btn-sm" onclick="Valuesdelete('{{ profile[0] }}')" data-bs-toggle="modal" data-bs-target="#exampleDelete{{ profile[0] }}" >Delete</button>
          </div>
         </td>
       </tr>
@@ -246,7 +246,7 @@
 function Valuesdelete(id_del) {
     document.getElementById("id_del").value = id_del;
 }
-  </script>
+</script>
 
 {% endblock %}
 

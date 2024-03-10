@@ -159,12 +159,12 @@ def s_profile():
             # if modify password
             pwd_match = re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c)
             if password_n != "" and password_c != "":
-                if session['pwd']!= password:    # if the original password is not correct
+                if session['pwd']!= password:  # if the original password is not correct
                     flash("The original password is wrong.","danger")
                     return redirect(url_for('staff.s_profile'))
                 else:
-                    if password_n != password_c:
-                        flash("The twice password is different.","danger")   
+                    if password_n != password_c:  # 
+                        flash("The second password input is incorrect. Please enter it again.","danger")  
                         return redirect(url_for('staff.s_profile')) 
                     else:
                         if pwd_match: 
@@ -176,10 +176,10 @@ def s_profile():
             elif password_n != "" and password_c == "" or password_n == "" and password_c != "":
                 flash("Please confirm your password.","danger")    
                 return redirect(url_for('staff.s_profile')) 
-            elif password != None:
+            elif password != "":
                 if session['pwd']!= password:    # if the original password is not correct
                     flash("The original password is wrong.","danger")
-                    return redirect(url_for('admin.a_profile'))
+                    return redirect(url_for('staff.s_profile')) 
         
             flash("Modify profile successfully.","success") 
             return redirect(url_for('staff.s_profile'))
