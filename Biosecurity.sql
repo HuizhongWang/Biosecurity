@@ -72,58 +72,6 @@ on update cascade
 ON DELETE CASCADE
 );
 
-DELIMITER //
-
-CREATE TRIGGER insert_forester
-AFTER INSERT ON forester
-FOR EACH ROW
-BEGIN
-    INSERT INTO users (forester_id,pin,status_now,roles)
-    VALUES (NEW.forester_id,new.pin,new.status_now,new.roles);
-END;
-//
-
-CREATE TRIGGER update_forester
-AFTER UPDATE ON forester
-FOR EACH ROW
-BEGIN
-    IF NEW.status_now != OLD.status_now THEN
-        UPDATE users
-        SET status_now = NEW.status_now
-        WHERE forester_id = NEW.forester_id;
-    END IF;
-    IF NEW.pin != OLD.pin THEN 
-		UPDATE users
-        SET pin = NEW.pin
-        WHERE forester_id = NEW.forester_id;
-    END IF;
-END;
-//
-
-CREATE TRIGGER update_staff
-AFTER UPDATE ON staff_admin
-FOR EACH ROW
-BEGIN
-    IF NEW.status_now != OLD.status_now THEN
-        UPDATE users
-        SET status_now = NEW.status_now
-        WHERE staff_id = NEW.staff_id;
-    END IF;
-    IF NEW.pin != OLD.pin THEN 
-		UPDATE users
-        SET pin = NEW.pin
-        WHERE staff_id = NEW.staff_id;
-    END IF;
-    IF NEW.roles != OLD.roles THEN 
-		UPDATE users
-        SET roles = NEW.roles
-        WHERE staff_id = NEW.staff_id;
-    END IF;
-END;
-//
-
-DELIMITER ;
-
 
 
 
