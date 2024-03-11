@@ -193,6 +193,8 @@ def a_profile():
                             n_hash = hashing.hash_value(password_c,salt="abc")
                             connection.execute("update staff_admin set pin=%s where staff_id=%s",(n_hash,user_id,))  
                             connection.execute("update users set pin=%s where staff_id=%s",(n_hash,user_id,))
+                            flash("Modify profile successfully.","success") 
+                            return redirect(url_for('admin.a_profile'))
                         else:
                             flash("Please input your password in right format.","danger")    
                             return redirect(url_for('admin.a_profile')) 
@@ -201,11 +203,14 @@ def a_profile():
                 return redirect(url_for('admin.a_profile')) 
             elif password_n != password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
                     flash("Please input your password in right format.","danger")    
-                    return redirect(url_for('admin.f_profile')) 
+                    return redirect(url_for('admin.a_profile')) 
             elif password != "":
                 if session['pwd']!= password:    # if the original password is not correct
                     flash("The original password is wrong.","danger")
                     return redirect(url_for('admin.a_profile'))
+            elif password_n == password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
+                    flash("Please input your password in right format.","danger")    
+                    return redirect(url_for('admin.a_profile')) 
 
             flash("Modify profile successfully.","success") 
             return redirect(url_for('admin.a_profile'))
@@ -376,7 +381,6 @@ def s_profile():
                 email= request.form.get("a_email").strip()
                 phone= request.form.get("a_phone").strip()
                 date= request.form.get("a_date").strip()
-                password= request.form.get("a_pass").strip()
                 password_n= request.form.get("a_passn").strip()
                 password_c= request.form.get("a_passc").strip()
 
@@ -391,34 +395,17 @@ def s_profile():
                     flash("Please check the format of email or phone number.","danger")
                     return redirect(url_for('admin.s_profile'))
                 
-                # if modify password
-                pwd_match = re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c)
-                if password_n != "" and password_c != "":
-                    if session['pwd']!= password:    # if the original password is not correct
-                        flash("The original password is wrong.","danger")
-                        return redirect(url_for('admin.s_profile'))
-                    else:  # if the priginal password is correct
-                        if password_n != password_c:  # if the confrim password is wrong 
-                            flash("The second password input is incorrect. Please enter it again.","danger")   
-                            return redirect(url_for('admin.s_profile')) 
-                        else:  # if the confirm password is right
-                            if pwd_match:  # check the format new password is right
-                                n_hash = hashing.hash_value(password_c,salt="abc")
-                                connection.execute("update staff_admin set pin=%s where staff_id=%s",(n_hash,user_id,))  
-                                connection.execute("update users set pin=%s where staff_id=%s",(n_hash,user_id))
-                            else:
-                                flash("Please input your password in right format.","danger")    
-                                return redirect(url_for('admin.s_profile')) 
-                elif password_n != "" and password_c == "" or password_n == "" and password_c != "":
-                    flash("Please confirm your password.","danger")    
+                # if change password
+                if password_n == password_c != "" and re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
+                    n_hash = hashing.hash_value(password_c,salt="abc")
+                    connection.execute("update staff_admin set pin=%s where staff_id=%s",(n_hash,user_id,))  
+                    connection.execute("update users set pin=%s where staff_id=%s",(n_hash,user_id,))
+                elif password_n == password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
+                    flash("Please input your password in right format.","danger")    
                     return redirect(url_for('admin.s_profile')) 
-                elif password != "":
-                    if session['pwd']!= password:    # if the original password is not correct
-                        flash("The original password is wrong.","danger")
-                        return redirect(url_for('admin.s_profile'))
                 elif password_n != password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
                     flash("Please input your password in right format.","danger")    
-                    return redirect(url_for('admin.f_profile')) 
+                    return redirect(url_for('admin.s_profile')) 
 
                 flash("Modify profile successfully.","success") 
             

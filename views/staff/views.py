@@ -186,6 +186,8 @@ def s_profile():
                             n_hash = hashing.hash_value(password_c,salt="abc")
                             connection.execute("update staff_admin set pin=%s where staff_id=%s",(n_hash,user_id,))  
                             connection.execute("update users set pin=%s where staff_id=%s",(n_hash,user_id,))  
+                            flash("Modify profile successfully.","success") 
+                            return redirect(url_for('staff.s_profile'))
                         else:
                             flash("Please input your password in right format.","danger")    
                             return redirect(url_for('staff.s_profile')) 
@@ -198,7 +200,10 @@ def s_profile():
                     return redirect(url_for('staff.s_profile')) 
             elif password_n != password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
                     flash("Please input your password in right format.","danger")    
-                    return redirect(url_for('admin.f_profile')) 
+                    return redirect(url_for('staff.s_profile')) 
+            elif password_n == password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
+                    flash("Please input your password in right format.","danger")    
+                    return redirect(url_for('staff.s_profile')) 
         
             flash("Modify profile successfully.","success") 
             return redirect(url_for('staff.s_profile'))

@@ -82,7 +82,7 @@ def f_profile():
                 connection.execute("update forester set address=%s,email=%s,phone=%s where forester_id=%s",(address,email,phone,user_id,)) 
             else:
                 flash("Please check the format of email or phone number.","danger")
-                return redirect(url_for('staff.s_profile'))    
+                return redirect(url_for('forester.f_profile'))    
 
             # if modify password
             pwd_match = re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c)
@@ -99,19 +99,24 @@ def f_profile():
                             n_hash = hashing.hash_value(password_c,salt="abc")
                             connection.execute("update forester set pin=%s where forester_id=%s",(n_hash,user_id,))  
                             connection.execute("update users set pin=%s where forester_id=%s",(n_hash,user_id,))
+                            flash("Modify profile successfully.","success") 
+                            return redirect(url_for('forester.f_profile'))
                         else:
                             flash("Please input your password in right format.","danger")    
                             return redirect(url_for('forester.f_profile')) 
             elif password_n != "" and password_c == "" or password_n == "" and password_c != "":
                 flash("Please confirm your password.","danger")    
-                return redirect(url_for('staff.s_profile')) 
+                return redirect(url_for('forester.f_profile')) 
             elif password != "":
                 if session['pwd']!= password:    # if the original password is not correct
                     flash("The original password is wrong.","danger")
                     return redirect(url_for('forester.f_profile'))
             elif password_n != password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
                     flash("Please input your password in right format.","danger")    
-                    return redirect(url_for('admin.f_profile')) 
+                    return redirect(url_for('forester.f_profile')) 
+            elif password_n == password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
+                    flash("Please input your password in right format.","danger")    
+                    return redirect(url_for('forester.f_profile')) 
             
             flash("Modify profile successfully.","success") 
             return redirect(url_for('forester.f_profile'))
