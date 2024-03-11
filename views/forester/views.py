@@ -28,13 +28,7 @@ def f_index():
             FROM forestry f left join images i
             on f.forestry_id = i.forestry_id
             where i.show_p = 1""")
-        guide_get = connection.fetchall()
-        # convert blob to base64 encodeing
-        guide_list =[]
-        for guide in guide_get:
-            guide=list(guide)
-            guide[4]= base64.b64encode(guide[4]).decode('ascii')
-            guide_list.append(guide)       
+        guide_list= connection.fetchall()   
         
         return render_template("forester/guide.html",guide_list=guide_list)
 
@@ -53,13 +47,7 @@ def f_detail():
             FROM forestry f left join images i
             on f.forestry_id = i.forestry_id
             where i.show_p = 1 and f.forestry_id = %s""",(forestry_id,))
-        detail_get = connection.fetchall()
-        # convert blob to base64 encodeing
-        detail_list =[]
-        for detail in detail_get:
-            detail=list(detail)
-            detail[8]= base64.b64encode(detail[8]).decode('ascii')
-            detail_list.append(detail) 
+        detail_list = connection.fetchall()
 
         # select all images of the forestry
         connection.execute("""SELECT images FROM images where forestry_id = %s and show_p=0;""",(forestry_id,))

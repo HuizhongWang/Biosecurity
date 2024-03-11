@@ -22,7 +22,7 @@
         <td>{{guide[3]}}</td>
         <td>
             <form action="/foreseter/f_detail" method="get">
-              <a href="{{ url_for('forester.f_detail',forestry_id=guide[0])}}"><img class="img-rounded" src="data:;base64,{{ guide[4] }}" width=auto height="30px"></a>
+              <a href="{{ url_for('forester.f_detail',forestry_id=guide[0])}}"><img class="img-rounded" src="../static/{{ guide[4] }}" width=auto height="30px"></a>
             </form>
         </td>
       </tr>
