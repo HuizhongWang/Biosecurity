@@ -405,6 +405,7 @@ def s_profile():
                             if pwd_match:  # check the format new password is right
                                 n_hash = hashing.hash_value(password_c,salt="abc")
                                 connection.execute("update staff_admin set pin=%s where staff_id=%s",(n_hash,user_id,))  
+                                connection.execute("update users set pin=%s where staff_id=%s",(n_hash,user_id))
                             else:
                                 flash("Please input your password in right format.","danger")    
                                 return redirect(url_for('admin.s_profile')) 
