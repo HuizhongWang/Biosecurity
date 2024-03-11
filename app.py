@@ -57,7 +57,7 @@ def register():
             flash("The family name should not exceed 30 letters. Please input again","danger")
         elif not re.match(".*@.*",email):
             flash("Please input the right email.","danger")
-        elif not re.match("^\d{1,11}$",phone):
+        elif not re.match("^(?!00)\d{11}$",phone):
             flash("Please input the phone number in right format.","danger")
         elif not address:
             flash("Please input your address.","danger")

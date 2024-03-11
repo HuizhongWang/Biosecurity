@@ -135,7 +135,7 @@ def a_profile():
                 connection.execute("""update staff_admin set roles=%s,first_name=%s,family_name=%s,
                     status_now=%s,email=%s,phone=%s,hire_date=%s,staff_position=%s,department=%s
                     where staff_id=%s""",(roles,first,family,status,email,phone,date,position,department,user_id,)) 
-                connection.execute("update users set status_now=%s where staff_id = %s;",(status,user_id,))            
+                connection.execute("update users set status_now=%s where staff_id = %s;",(status,user_id,))           
             else:
                 flash("Please check the format of email or phone number.","danger")
                 return redirect(url_for('admin.a_profile'))
@@ -154,12 +154,16 @@ def a_profile():
                         if pwd_match:  # check the format new password is right
                             n_hash = hashing.hash_value(password_c,salt="abc")
                             connection.execute("update staff_admin set pin=%s where staff_id=%s",(n_hash,user_id,))  
+                            connection.execute("update users set pin=%s where staff_id=%s",(n_hash,user_id,))
                         else:
                             flash("Please input your password in right format.","danger")    
                             return redirect(url_for('admin.a_profile')) 
             elif password_n != "" and password_c == "" or password_n == "" and password_c != "":
                 flash("Please confirm your password.","danger")    
                 return redirect(url_for('admin.a_profile')) 
+            elif password_n != password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
+                    flash("Please input your password in right format.","danger")    
+                    return redirect(url_for('admin.f_profile')) 
             elif password != "":
                 if session['pwd']!= password:    # if the original password is not correct
                     flash("The original password is wrong.","danger")
@@ -220,6 +224,7 @@ def f_profile():
                     # get the forester id of the current register
                     connection.execute("select max(forester_id) from forester")
                     forester_id = connection.fetchone()[0]
+                    connection.execute("insert into users(roles,forester_id,pin,status_now) values('forester',%s,%s,1)",(forester_id,pwd_hash,))
                     flash("Add successfully! Forester ID: {} ".format(forester_id),"success")
                 
             # edit forester
@@ -239,6 +244,7 @@ def f_profile():
                     connection.execute("""update forester set first_name=%s,family_name=%s,
                         status_now=%s,email=%s,phone=%s,date_joined=%s 
                         where forester_id=%s""",(first,family,status,email,phone,date,f_id,))  
+                    connection.execute("update users set status_now=%s where forester_id=%s",(status,f_id))
                 else:
                     flash("Please check the format of email or phone number.","danger")
                     return redirect(url_for('admin.f_profile'))
@@ -247,7 +253,11 @@ def f_profile():
                 if password_n == password_c != "" and re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
                     n_hash = hashing.hash_value(password_c,salt="abc")
                     connection.execute("update forester set pin=%s where forester_id=%s",(n_hash,f_id,))  
+                    connection.execute("update users set pin=%s where forester_id=%s",(n_hash,f_id))
                 elif password_n == password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
+                    flash("Please input your password in right format.","danger")    
+                    return redirect(url_for('admin.f_profile')) 
+                elif password_n != password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
                     flash("Please input your password in right format.","danger")    
                     return redirect(url_for('admin.f_profile')) 
                 
@@ -257,6 +267,7 @@ def f_profile():
             elif request.values.get("del_f") == "del_f":
                 f_id = request.form.get("id_del")
                 connection.execute("update forester set status_now = 0 where forester_id=%s",(f_id,))  
+                connection.execute("update users set status_now=0 where forester_id=%s",(f_id))
                 flash("Delete the forester successfully.","success") 
 
         return redirect(url_for('admin.f_profile')) 
@@ -271,7 +282,7 @@ def s_profile():
     if session['userid'] and session['role'] == "admin" and session['status']== 1:
         if request.method == "GET":
             # get the staff list
-            connection.execute("SELECT * FROM staff_admin where status_now = 1;")
+            connection.execute("SELECT * FROM staff_admin where status_now = 1 and roles='staff';")
             staff_list= connection.fetchall()
             return render_template("/admin/s_profile.html",staff_list=staff_list)
         else:
@@ -311,6 +322,7 @@ def s_profile():
                     # get the staff id of the current register
                     connection.execute("select max(staff_id) from staff_admin")
                     staff_id = connection.fetchone()[0]
+                    connection.execute("insert into users(roles,staff_id,pin,status_now) values('staff',%s,%s,1)",(staff_id,pwd_hash,))
                     flash("Add successfully! Forester ID: {} ".format(staff_id),"success")
                 
             # edit staff
@@ -334,7 +346,8 @@ def s_profile():
                     connection.execute("""update staff_admin set roles=%s,first_name=%s,family_name=%s,
                         status_now=%s,email=%s,phone=%s,hire_date=%s,staff_position=%s,department=%s
                         where staff_id=%s""",(roles,first,family,status,email,phone,date,position,department,user_id,)) 
-                    connection.execute("update users set status_now=%s where staff_id = %s;",(status,user_id,))            
+                    connection.execute("update users set status_now=%s where staff_id = %s;",(status,user_id,))   
+                    connection.execute("update users set status_now=%s where staff_id=%s",(status,user_id))         
                 else:
                     flash("Please check the format of email or phone number.","danger")
                     return redirect(url_for('admin.s_profile'))
@@ -363,6 +376,9 @@ def s_profile():
                     if session['pwd']!= password:    # if the original password is not correct
                         flash("The original password is wrong.","danger")
                         return redirect(url_for('admin.s_profile'))
+                elif password_n != password_c != "" and not re.match("^(?=.*[a-zA-Z0-9!@#$%^&*()-+=])(?=.*[a-zA-Z0-9]).{8,30}$",password_c):
+                    flash("Please input your password in right format.","danger")    
+                    return redirect(url_for('admin.f_profile')) 
 
                 flash("Modify profile successfully.","success") 
             
@@ -370,6 +386,7 @@ def s_profile():
             elif request.values.get("del_s") == "del_s":
                 f_id = request.form.get("id_del")
                 connection.execute("update staff_admin set status_now = 0 where staff_id=%s",(f_id,))  
+                connection.execute("update users set status_now=0 where staff_id=%s",(user_id))   
                 flash("Delete the staff successfully.","success") 
 
         return redirect(url_for('admin.s_profile')) 
