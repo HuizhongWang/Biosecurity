@@ -267,7 +267,7 @@ def f_profile():
             elif request.values.get("del_f") == "del_f":
                 f_id = request.form.get("id_del")
                 connection.execute("update forester set status_now = 0 where forester_id=%s",(f_id,))  
-                connection.execute("update users set status_now=0 where forester_id=%s",(f_id))
+                connection.execute("update users set status_now=0 where forester_id=%s",(f_id,))
                 flash("Delete the forester successfully.","success") 
 
         return redirect(url_for('admin.f_profile')) 
@@ -382,11 +382,11 @@ def s_profile():
 
                 flash("Modify profile successfully.","success") 
             
-            # delete forester
+            # delete staff
             elif request.values.get("del_s") == "del_s":
                 f_id = request.form.get("id_del")
                 connection.execute("update staff_admin set status_now = 0 where staff_id=%s",(f_id,))  
-                connection.execute("update users set status_now=0 where staff_id=%s",(user_id))   
+                connection.execute("update users set status_now=0 where staff_id=%s",(user_id,))   
                 flash("Delete the staff successfully.","success") 
 
         return redirect(url_for('admin.s_profile')) 
