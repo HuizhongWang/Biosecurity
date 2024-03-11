@@ -27,14 +27,35 @@
             </form>
         </td>
         <td>
-          <div style="text-align:left">
-          <form action="/staff/s_guide" method="get" id="add_del_myForm">
-            <button type="submit" class="btn btn-success btn-sm" name="add_guide" value="add_guide">Add</button>
-          </form>
-            <button type="submit" class="btn btn-danger btn-sm" onclick="Valuesdelete('{{ guide[0] }}')" name="del_guide" value="del_guide">Delete</button>
-         
-          </div>
+          <div class="d-flex">
+            <form action="/staff/guide" method="post" id="add_myForm">
+                <button type="submit" class="btn btn-success btn-sm me-2" name="add_guide" value="add_guide">Add</button>     
+            </form>
+            <button type="submit" class="btn btn-danger btn-sm" onclick="Valuesdelete('{{ guide[0] }}')" data-bs-toggle="modal" data-bs-target="#deletemodel{{ guide[0] }}" >Delete</button>
+          </div>   
+        </td>      
       </tr>
+      <!-- Modal delete-->
+      <div class="modal fade" id="deletemodel{{ guide[0] }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete the guide</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Do you want to delete this guide?
+            </div>
+            <form class="form-horizontal" style="margin-top: 40px;" action="/staff/s_index" method="POST" id="myForm1">
+              <input type="hidden" class="form-control" name="id" id="id">
+            </form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" form="myForm1" name="del_guide" value="del_guide">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
       {% endfor %}
     </tbody>
   </table>

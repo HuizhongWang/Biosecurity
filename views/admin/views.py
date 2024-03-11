@@ -233,6 +233,7 @@ def f_profile():
                 status= request.form.get("group1")
                 first = request.form.get("f_first").strip()
                 family = request.form.get("f_family").strip()
+                address = request.form.get("f_add").strip()
                 email= request.form.get("f_email").strip()
                 phone= request.form.get("f_phone").strip()
                 date= request.form.get("f_date").strip()
@@ -242,8 +243,8 @@ def f_profile():
                 # modify other info except password
                 if re.match(".*@.*",email) and re.match("^(?!00)\d{11}$",phone):
                     connection.execute("""update forester set first_name=%s,family_name=%s,
-                        status_now=%s,email=%s,phone=%s,date_joined=%s 
-                        where forester_id=%s""",(first,family,status,email,phone,date,f_id,))  
+                        status_now=%s,address=%s,email=%s,phone=%s,date_joined=%s 
+                        where forester_id=%s""",(first,family,status,address,email,phone,date,f_id,))  
                     connection.execute("update users set status_now=%s where forester_id=%s",(status,f_id))
                 else:
                     flash("Please check the format of email or phone number.","danger")

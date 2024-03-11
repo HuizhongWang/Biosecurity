@@ -53,29 +53,8 @@ def s_index():
         if request.method == 'GET':    
             return render_template("staff/guide.html",guide_list=guide_list)
         else:
-            # add guide
-            if request.values.get("add_guide") == "add_guide":
-                return redirect(url_for('staff.s_guide'))
-            
-            # elif request.values.get("add") == "add":
-            #     type = request.form.get('group1')
-            #     present = request.form.get("group2")
-            #     common= request.form.get("common")
-            #     scientific= request.form.get("sci")
-            #     key= request.form.get("key")
-            #     bio= request.form.get("biology")
-            #     symptoms= request.form.get("symptoms")
-
-            #     connection.execute("""insert into forestry  
-            #         (forestry_type,present_in_nz,common_name,scientific_name,key_charac, biology, symptoms) values
-            #         (%s,%s,%s,%s,%s,%s,%s)""",(type,present,common,scientific,key,bio,symptoms,))  
-                
-            #     connection.execute("select max(forestry_id) from forestry")
-            #     forid = connection.fetchone()[0]
-            #     flash("Add Forestry ID:{} successfully!".format(forid),"success")
-
             # delete guide
-            elif request.values.get("del_guide") == "del_guide":
+            if request.values.get("del_guide") == "del_guide":
                 forid= request.form.get("id_del")
                 connection.execute("delete from forestry where forestry_id=%s",(forid,))  
                 flash("Delete successfully!","success")
@@ -87,7 +66,29 @@ def s_index():
 @staff_blu.route("/guide",methods = ["GET","POST"])
 def s_guide():
         if session['userid'] and session['role'] == "staff" and session['status']== 1:
-            
+            connection = getCursor()
+            # add guide
+            if request.values.get("add") == "add":
+                typ = request.form.get('group1')
+                present = request.form.get("group2")
+                common= request.form.get("common")
+                scientific= request.form.get("sci")
+                keys= request.form.get("key").strip()
+                bio= request.form.get("biology").strip()
+                symptoms= request.form.get("symptoms").strip()
+
+                connection.execute("""insert into forestry  
+                    (forestry_type,present_in_nz,common_name,scientific_name,key_charac, biology, symptoms) values
+                    (%s,%s,%s,%s,%s,%s,%s)""",(typ,present,common,scientific,keys,bio,symptoms,))  
+                
+                connection.execute("select max(forestry_id) from forestry")
+                forid = connection.fetchone()[0]
+                flash("Add Forestry ID:{} successfully!".format(forid),"success")
+
+                connection.execute("""insert into images 
+                    (forestry_id,show_p) values
+                    (%s,%s)""",(forid,1))  
+
             return render_template("staff/add_guide.html")
 
 

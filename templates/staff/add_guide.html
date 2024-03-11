@@ -9,7 +9,7 @@
   <div style="text-align: center">
     <h5>Add Guide</h5>
   </div>
-  <form class="form-horizontal needs-validation" style="margin-top: 40px;" action="/staff/s_index" method="POST" id="add_myForm" >
+  <form class="form-horizontal needs-validation" style="margin-top: 40px;" action="/staff/guide" method="POST" id="add_myForm" >
     <div class="row">
       <div class="col-md-2">
         <div><label for="message-text" class="col-form-label">Forestry type</label></div>
@@ -35,11 +35,11 @@
       </div>
       <div class="col-md-4">
         <label for="message-text" class="col-form-label">Common name</label>
-        <input type="text" class="form-control" name="common" id="common">
+        <input type="text" class="form-control" name="common" id="common" required>
       </div>
       <div class="col-md-4">
         <label for="message-text" class="col-form-label">Scientific name</label>
-        <input type="text" class="form-control" name="sci" id="sci">
+        <input type="text" class="form-control" name="sci" id="sci" required>
       </div>
     </div>
     
