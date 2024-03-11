@@ -51,13 +51,7 @@ def f_detail():
 
         # select all images of the forestry
         connection.execute("""SELECT images FROM images where forestry_id = %s and show_p=0;""",(forestry_id,))
-        image_get= connection.fetchall()
-        image_list =[]
-        for image in image_get:
-            image=list(image)
-            image[0]= base64.b64encode(image[0]).decode('ascii')
-            image_list.append(image) 
-
+        image_list= connection.fetchall()
         return render_template("/forester/detail.html",detail_list=detail_list,image_list=image_list)
     else:
         return redirect(url_for('login'))

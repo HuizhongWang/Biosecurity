@@ -26,7 +26,7 @@
         <td>{{detail[3]}}</td>
         <td>{{detail[4]}}</td>
         <td>
-            <img class="img-rounded" src="data:;base64,{{ detail[8] }}" width=auto height="200px">
+            <img class="img-rounded" src="../static/{{ detail[8] }}"  width=auto height="200px">
         </td>
         <td>
           <div style="height:50px">
@@ -35,7 +35,7 @@
               <div class="carousel-inner ">
                 {% for images in image_list %}
                 <div class="carousel-item active">
-                  <a href=""><img class="mx-auto d-block" width=auto height="200px"src="data:;base64,{{ images[0] }}"></a>
+                  <a href=""><img class="mx-auto d-block" width=auto height="200px"src="../static/{{ images[0] }}" ></a>
                 </div>
                 {% endfor %}
               </div>
