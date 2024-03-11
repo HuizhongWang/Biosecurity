@@ -11,6 +11,7 @@
         <th scope="col">Present in NZ</th>
         <th scope="col">Common Name</th>
         <th scope="col">Image</th>
+        <th scope="col">Edit</th>
       </tr>
     </thead>
     <tbody>
@@ -25,7 +26,23 @@
               <a href="{{ url_for('staff.s_detail',forestry_id=guide[0])}}"><img class="img-rounded" src="../static/{{ guide[4] }}" width=auto height="30px"></a>
             </form>
         </td>
+        <td>
+          <div style="text-align:left">
+          <form action="/staff/s_guide" method="get" id="add_del_myForm">
+            <button type="submit" class="btn btn-success btn-sm" name="add_guide" value="add_guide">Add</button>
+          </form>
+            <button type="submit" class="btn btn-danger btn-sm" onclick="Valuesdelete('{{ guide[0] }}')" name="del_guide" value="del_guide">Delete</button>
+         
+          </div>
       </tr>
       {% endfor %}
     </tbody>
-  </table>{% endblock %}
+  </table>
+  {% endblock %}
+
+<script>
+    // get the info when delete
+  function Valuesdelete(id_del) {
+    document.getElementById("id_del").value = id_del;
+}
+</script>

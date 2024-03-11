@@ -205,12 +205,10 @@
   // get the radio
   const radioButtonsGroup1 = document.querySelectorAll('input[name="group1"]');  // type
   const radioButtonsGroup2 = document.querySelectorAll('input[name="group2"]');  // present in nz
-  var iddd = document.getElementById("common").value
-  console.log(iddd)
   
   radioButtonsGroup1.forEach(function(radioButton) {
     radioButton.addEventListener('change', function(event) {
-      // get the value of the radiao
+      // get the value of the radio
       const selectedValue = document.querySelector('input[name="group1"]:checked').value;
       console.log('Selected value of group 1:', selectedValue);
     });
@@ -218,7 +216,7 @@
 
   radioButtonsGroup2.forEach(function(radioButton) {
     radioButton.addEventListener('change', function(event) {
-      // get the value of the radiao
+      // get the value of the radio
       const selectedValue = document.querySelector('input[name="group2"]:checked').value;
       console.log('Selected value of group 2:', selectedValue);
     });

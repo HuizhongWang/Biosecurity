@@ -22,7 +22,6 @@ def colseCursor():
      dbconn.close()
      connection.close()
 
-
 # get forestry data
 def forestry_get(forestry_id):
     global detail_list,image_list
@@ -51,11 +50,46 @@ def s_index():
             on f.forestry_id = i.forestry_id
             where i.show_p = 1""")
         guide_list = connection.fetchall()     
-        return render_template("staff/guide.html",guide_list=guide_list)
+        if request.method == 'GET':    
+            return render_template("staff/guide.html",guide_list=guide_list)
+        else:
+            # add guide
+            if request.values.get("add_guide") == "add_guide":
+                return redirect(url_for('staff.s_guide'))
+            
+            # elif request.values.get("add") == "add":
+            #     type = request.form.get('group1')
+            #     present = request.form.get("group2")
+            #     common= request.form.get("common")
+            #     scientific= request.form.get("sci")
+            #     key= request.form.get("key")
+            #     bio= request.form.get("biology")
+            #     symptoms= request.form.get("symptoms")
 
+            #     connection.execute("""insert into forestry  
+            #         (forestry_type,present_in_nz,common_name,scientific_name,key_charac, biology, symptoms) values
+            #         (%s,%s,%s,%s,%s,%s,%s)""",(type,present,common,scientific,key,bio,symptoms,))  
+                
+            #     connection.execute("select max(forestry_id) from forestry")
+            #     forid = connection.fetchone()[0]
+            #     flash("Add Forestry ID:{} successfully!".format(forid),"success")
+
+            # delete guide
+            elif request.values.get("del_guide") == "del_guide":
+                forid= request.form.get("id_del")
+                connection.execute("delete from forestry where forestry_id=%s",(forid,))  
+                flash("Delete successfully!","success")
+
+            return redirect(url_for('staff.s_index'))
     else:
         return redirect(url_for('login'))
-    
+
+@staff_blu.route("/guide",methods = ["GET","POST"])
+def s_guide():
+        if session['userid'] and session['role'] == "staff" and session['status']== 1:
+            
+            return render_template("staff/add_guide.html")
+
 
 @staff_blu.route("/detail",methods = ["GET","POST"])
 def s_detail():   
@@ -80,7 +114,6 @@ def s_detail():
                 connection.execute("""update forestry set 
                     forestry_type=%s,present_in_nz=%s,common_name=%s,scientific_name=%s,
                     key_charac=%s, biology=%s, symptoms=%s where forestry_id=%s""",(type,present,common,scientific,key,bio,symptoms,forid,))  
-                print(type,forid,"ooooo")
                 flash("Update successfully!","success")
 
             # delete the detail 
