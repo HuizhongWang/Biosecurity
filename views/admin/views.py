@@ -44,11 +44,49 @@ def a_index():
             on f.forestry_id = i.forestry_id
             where i.show_p = 1""")
         guide_list = connection.fetchall()    
-        return render_template("admin/guide.html",guide_list=guide_list)
+        if request.method == 'GET':  
+            return render_template("admin/guide.html",guide_list=guide_list)
+        else:
+            # delete guide
+            if request.values.get("del_guide") == "del_guide":
+                forid= request.form.get("delid")
+                connection.execute("delete from forestry where forestry_id=%s",(forid,))  
+                flash("Delete successfully!","success")
+
+            return redirect(url_for('admin.a_index'))
 
     else:
         return redirect(url_for('login'))
-    
+
+
+@admin_blu.route("/guide",methods = ["GET","POST"])
+def a_guide():
+        if session['userid'] and session['role'] == "admin" and session['status']== 1:
+            connection = getCursor()
+            # add guide
+            if request.values.get("add") == "add":
+                typ = request.form.get('group1')
+                present = request.form.get("group2")
+                common= request.form.get("common")
+                scientific= request.form.get("sci")
+                keys= request.form.get("key").strip()
+                bio= request.form.get("biology").strip()
+                symptoms= request.form.get("symptoms").strip()
+
+                connection.execute("""insert into forestry  
+                    (forestry_type,present_in_nz,common_name,scientific_name,key_charac, biology, symptoms) values
+                    (%s,%s,%s,%s,%s,%s,%s)""",(typ,present,common,scientific,keys,bio,symptoms,))  
+                
+                connection.execute("select max(forestry_id) from forestry")
+                forid = connection.fetchone()[0]
+                flash("Add Forestry ID:{} successfully!".format(forid),"success")
+
+                connection.execute("""insert into images 
+                    (forestry_id,show_p) values
+                    (%s,%s)""",(forid,1))  
+
+            return render_template("admin/add_guide.html")
+
 
 @admin_blu.route("/detail",methods = ["GET","POST"])
 def a_detail():   

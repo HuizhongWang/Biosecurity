@@ -4,28 +4,67 @@
 
 {% block content %}
 <table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Type</th>
-        <th scope="col">Present in NZ</th>
-        <th scope="col">Common Name</th>
-        <th scope="col">Image</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for guide in guide_list %}
-      <tr>
-        <th>{{guide[0]}}</th>
-        <td>{{guide[1]}}</td>
-        <td>{{guide[2]}}</td>
-        <td>{{guide[3]}}</td>
-        <td>
-            <form action="/admin/a_detail" method="get">
-              <a href="{{ url_for('admin.a_detail',forestry_id=guide[0])}}"><img class="img-rounded" src="../static/{{ guide[4] }}" width=auto height="30px"></a>
-            </form>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>{% endblock %}
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Type</th>
+      <th scope="col">Present in NZ</th>
+      <th scope="col">Common Name</th>
+      <th scope="col">Image</th>
+      <th scope="col">Edit</th>
+    </tr>
+  </thead>
+  <tbody>  
+    {% for guide in guide_list %}    
+    <tr>
+      <th>{{guide[0]}}</th>
+      <td>{{guide[1]}}</td>
+      <td>{{guide[2]}}</td>
+      <td>{{guide[3]}}</td>
+      <td>
+          <form action="/admin/a_detail" method="get">
+            <a href="{{ url_for('admin.a_detail',forestry_id=guide[0])}}"><img class="img-rounded" src="../static/{{ guide[4] }}" width=auto height="30px"></a>
+          </form>
+      </td>
+      <td>
+        <div class="d-flex">
+          <form action="/admin/guide" method="post" id="add_myForm">
+              <button type="submit" class="btn btn-success btn-sm me-2" name="add_guide" value="add_guide">Add</button>     
+          </form>
+          <button type="button" class="btn btn-danger btn-sm" onclick="Valuesdel('{{ guide[0] }}')" data-bs-toggle="modal" data-bs-target="#deletemodel{{ guide[0] }}" >Delete</button>
+        </div>   
+      </td>      
+    </tr>   
+    <!-- Modal delete-->
+    <div class="modal fade" id="deletemodel{{ guide[0] }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Delete the guide</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Do you want to delete this guide?
+          </div>
+          <form class="form-horizontal" style="margin-top: 40px;" action="/admin/index" method="POST" id="myForm_del">
+            <input type="hidden" class="form-control" name="delid" id="delid">
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" form="myForm_del" name="del_guide" value="del_guide">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %} 
+  </tbody>
+</table>
+
+
+<script>
+  // get the info when delete
+function Valuesdel(delid) {
+  document.getElementById("delid").value = delid;
+}
+</script>
+{% endblock %}

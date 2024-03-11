@@ -55,7 +55,7 @@ def s_index():
         else:
             # delete guide
             if request.values.get("del_guide") == "del_guide":
-                forid= request.form.get("id_del")
+                forid= request.form.get("delid")
                 connection.execute("delete from forestry where forestry_id=%s",(forid,))  
                 flash("Delete successfully!","success")
 
