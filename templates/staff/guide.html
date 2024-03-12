@@ -30,9 +30,10 @@
         <td>
           <div class="d-flex">
             <form action="/staff/guide" method="post" id="add_myForm">
-                <button type="submit" class="btn btn-success btn-sm me-2" name="add_guide" value="add_guide">Add</button>     
+                <button type="submit" class="btn btn-success btn-sm me-2" name="add_guide" value="add_guide">Add guide</button>     
             </form>
-            <button type="button" class="btn btn-danger btn-sm" onclick="Valuesdel('{{ guide[0] }}')" data-bs-toggle="modal" data-bs-target="#deletemodel{{ guide[0] }}" >Delete</button>
+            <button type="button" class="btn btn-primary btn-sm me-2" onclick="Valuesimg('{{ guide[0] }}')" data-bs-toggle="modal" data-bs-target="#imgmodel">Add img</button>     
+            <button type="button" class="btn btn-danger btn-sm me-2" onclick="Valuesdel('{{ guide[0] }}')" data-bs-toggle="modal" data-bs-target="#deletemodel{{ guide[0] }}" >Delete</button>
           </div>   
         </td>      
       </tr>   
@@ -57,15 +58,47 @@
           </div>
         </div>
       </div>
+       <!-- Modal add images-->
+       <div class="modal fade" id="imgmodel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Upload images</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+      
+            <div class="modal-body">
+              <div class="container-fluid">
+                <form class="form-horizontal" style="margin-top: 40px;" action="/staff/index" method="POST" id="img_myForm" enctype="multipart/form-data">
+                  <div class="mb-3">
+                    <input type="file" class="form-control" name="fileimg" id="fileimg">
+                  </div>
+                  <input type="hidden" class="form-control" name="forid" id="forid">
+                </form>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary" form="img_myForm" name="upload" value="upload">Upload</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {% endfor %} 
     </tbody>
   </table>
-  
+       
 
 <script>
     // get the info when delete
   function Valuesdel(delid) {
     document.getElementById("delid").value = delid;
+}
+
+    // get the info when add images
+    function Valuesimg(forid) {
+    document.getElementById("forid").value = forid;
 }
 </script>
 {% endblock %}

@@ -1,6 +1,7 @@
 import base64
+import os
 import config
-from flask import redirect, render_template, request, session, url_for, flash,g
+from flask import current_app, redirect, render_template, request, session, url_for, flash,g
 import re
 import mysql
 import mysql.connector
@@ -48,7 +49,7 @@ def s_index():
             ,f.common_name,i.images
             FROM forestry f left join images i
             on f.forestry_id = i.forestry_id
-            where i.show_p = 1""")
+            where i.show_p = 1 order by f.forestry_id""")
         guide_list = connection.fetchall()     
         if request.method == 'GET':    
             return render_template("staff/guide.html",guide_list=guide_list)
@@ -58,10 +59,37 @@ def s_index():
                 forid= request.form.get("delid")
                 connection.execute("delete from forestry where forestry_id=%s",(forid,))  
                 flash("Delete successfully!","success")
+            
+            # upload images
+            elif request.values.get("upload") == "upload":
+                forid= int(request.form.get("forid"))
+                if 'fileimg' not in request.files:
+                    flash("No file part. Fail to add the image","danger")
+                    return redirect(url_for('staff.s_index'))
+                file_img = request.files.get("fileimg")
+                if file_img.filename == '':
+                    flash("No selected file. Fail to add the image","danger")
+                    return redirect(url_for('staff.s_index'))
+                if "fileimg" in request.files:
+                    file_img = request.files.get("fileimg")
+                    file_name = file_img.filename
+                    file_path = "./static/imgdata/"+file_name
+                    file_img.save(file_path)
+                    file_name = "imgdata/"+file_name
+                    connection.execute("select images from images where forestry_id=%s",(forid,))
+                    images = connection.fetchall() 
+                    if not images:   
+                        connection.execute("insert into images (forestry_id,images) values (%s,%s)", (forid,file_name,))
+                    else:
+                        connection.execute("update images set images=%s where forestry_id=%s", (file_name,forid,))
+                    flash("File saved successfully","success")
+                else:
+                    flash("Fail to save the file","danger")
 
             return redirect(url_for('staff.s_index'))
     else:
         return redirect(url_for('login'))
+
 
 @staff_blu.route("/guide",methods = ["GET","POST"])
 def s_guide():
@@ -83,12 +111,35 @@ def s_guide():
                 
                 connection.execute("select max(forestry_id) from forestry")
                 forid = connection.fetchone()[0]
+   
                 flash("Add Forestry ID:{} successfully!".format(forid),"success")
 
-                connection.execute("""insert into images 
-                    (forestry_id,show_p) values
-                    (%s,%s)""",(forid,1))  
-
+                # upload images
+                if 'fileimg' not in request.files:
+                    connection.execute("""insert into images 
+                        (forestry_id,show_p) values
+                        (%s,%s)""",(forid,1))  
+                    return render_template("staff/add_guide.html")
+                file_img = request.files.get("fileimg")
+                if file_img.filename == '':
+                    connection.execute("""insert into images 
+                        (forestry_id,show_p) values
+                        (%s,%s)""",(forid,1))  
+                    return render_template("staff/add_guide.html")
+                if "fileimg" in request.files:
+                    file_img = request.files.get("fileimg")
+                    file_name = file_img.filename
+                    file_path = "./static/imgdata/"+file_name
+                    file_img.save(file_path)
+                    file_name = "imgdata/"+file_name
+                    print(file_name)
+                    connection.execute("insert into images (forestry_id,images,show_p) values (%s,%s,1)", (forid,file_name,))
+                else:
+                    flash("Fail to save the image","danger")
+                    connection.execute("""insert into images 
+                        (forestry_id,show_p) values
+                        (%s,%s)""",(forid,1))  
+            
             return render_template("staff/add_guide.html")
 
 
