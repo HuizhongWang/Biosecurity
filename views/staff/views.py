@@ -78,7 +78,7 @@ def s_index():
                     file_name = "imgdata/"+file_name
                     connection.execute("select images from images where forestry_id=%s",(forid,))
                     images = connection.fetchall() 
-                    if not images:   
+                    if images:   
                         connection.execute("insert into images (forestry_id,images) values (%s,%s)", (forid,file_name,))
                     else:
                         connection.execute("update images set images=%s where forestry_id=%s", (file_name,forid,))
