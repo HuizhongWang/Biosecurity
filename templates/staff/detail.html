@@ -31,7 +31,7 @@
         <td>{{detail[3]}}</td>
         <td>{{detail[4]}}</td>
         <td>
-          <img class="img-rounded" src="../static/{{ detail[8] }}" width=auto height="200px">
+          <img class="img-rounded" src="../static/imgdata/{{detail[8]}}" width=auto height="200px">
         </td>
         <td>
           <div style="height:50px">
@@ -40,7 +40,7 @@
               <div class="carousel-inner ">
                 {% for images in image_list %}
                 <div class="carousel-item active">
-                  <img class="mx-auto d-block" width=auto height="200px" onclick="Valuesimg('{{ images[0] }}','{{ images[1] }}','{{ images[0] }}','{{ images[1] }}')"  src="../static/{{ images[2] }}" data-bs-toggle="modal" data-bs-target="#imgmodal{{ detail[0] }}">
+                  <img class="mx-auto d-block" width=auto height="200px" onclick="Valuesimg('{{ images[0] }}','{{ images[1] }}','{{ images[0] }}','{{ images[1] }}')"  src="../static/imgdata/{{ images[2] }}" data-bs-toggle="modal" data-bs-target="#imgmodal{{ detail[0] }}">
                 </div>
                 {% endfor %}
               </div>
