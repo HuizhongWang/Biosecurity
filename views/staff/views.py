@@ -73,7 +73,7 @@ def s_index():
                 if "fileimg" in request.files:
                     file_img = request.files.get("fileimg")
                     file_name = file_img.filename
-                    file_path = "./static/imgdata/"+file_name
+                    file_path = file_name
                     file_img.save(file_path)
                     file_name = "imgdata/"+file_name
                     connection.execute("select images from images where forestry_id=%s",(forid,))
@@ -129,7 +129,7 @@ def s_guide():
                 if "fileimg" in request.files:
                     file_img = request.files.get("fileimg")
                     file_name = file_img.filename
-                    file_path = "./static/imgdata/"+file_name
+                    file_path = "BIOSECURITY/static/imgdata/"+file_name
                     file_img.save(file_path)
                     file_name = "imgdata/"+file_name
                     print(file_name)
