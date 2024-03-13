@@ -53,7 +53,34 @@ def a_index():
                 connection.execute("delete from forestry where forestry_id=%s",(forid,))  
                 flash("Delete successfully!","success")
 
-            return redirect(url_for('admin.a_index'))
+            # upload images
+            elif request.values.get("upload") == "upload":
+                forid= int(request.form.get("forid"))
+                if 'fileimg' not in request.files:
+                    flash("No file part. Fail to add the image","danger")
+                    return redirect(url_for('admin.a_index'))
+                file_img = request.files.get("fileimg")
+
+                if file_img.filename == '':
+                    flash("No selected file. Fail to add the image","danger")
+                    return redirect(url_for('admin.a_index'))
+                
+                if "fileimg" in request.files:
+                    file_img = request.files.get("fileimg")
+                    file_name = file_img.filename
+                    file_path = "/Users/doubleluo/Documents/GitHub/Biosecurity/static/imgdata/" + file_name
+                    file_img.save(file_path)
+                    connection.execute("select images from images where forestry_id=%s",(forid,))
+                    images = connection.fetchall() 
+                    if images[0][0]!=None:   # the forestry already have images
+                        connection.execute("insert into images (forestry_id,images) values (%s,%s)", (forid,file_name,))
+                    else:
+                        connection.execute("update images set images=%s where forestry_id=%s", (file_name,forid,))
+                    flash("File saved successfully","success")
+                else:
+                    flash("Fail to save the file","danger")
+            
+        return redirect(url_for('admin.a_index'))
 
     else:
         return redirect(url_for('login'))
@@ -79,12 +106,33 @@ def a_guide():
                 
                 connection.execute("select max(forestry_id) from forestry")
                 forid = connection.fetchone()[0]
+   
                 flash("Add Forestry ID:{} successfully!".format(forid),"success")
 
-                connection.execute("""insert into images 
-                    (forestry_id,show_p) values
-                    (%s,%s)""",(forid,1))  
-
+                # upload images
+                if 'fileimg' not in request.files:
+                    connection.execute("""insert into images 
+                        (forestry_id,show_p) values
+                        (%s,%s)""",(forid,1))  
+                    return render_template("admin/add_guide.html")
+                file_img = request.files.get("fileimg")
+                if file_img.filename == '':
+                    connection.execute("""insert into images 
+                        (forestry_id,show_p) values
+                        (%s,%s)""",(forid,1))  
+                    return render_template("admin/add_guide.html")
+                if "fileimg" in request.files:
+                    file_img = request.files.get("fileimg")
+                    file_name = file_img.filename
+                    file_path = "/Users/doubleluo/Documents/GitHub/Biosecurity/static/imgdata/" + file_name
+                    file_img.save(file_path)
+                    connection.execute("insert into images (forestry_id,images,show_p) values (%s,%s,1)", (forid,file_name,))
+                else:
+                    flash("Fail to save the image","danger")
+                    connection.execute("""insert into images 
+                        (forestry_id,show_p) values
+                        (%s,%s)""",(forid,1))  
+            
             return render_template("admin/add_guide.html")
 
 
@@ -113,12 +161,6 @@ def a_detail():
                     key_charac=%s, biology=%s, symptoms=%s where forestry_id=%s""",(type,present,common,scientific,key,bio,symptoms,forid,))  
                 print(type,forid,"ooooo")
                 flash("Update successfully!","success")
-
-            # delete the detail 
-            elif request.values.get("delete") == "delete":
-                forid= request.form.get("id")
-                connection.execute("delete from forestry where forestry_id=%s",(forid,))  
-                flash("Delete successfully!","success")
 
             # change picture
             elif request.values.get("save") == "save":

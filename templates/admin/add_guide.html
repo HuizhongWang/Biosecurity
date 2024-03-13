@@ -9,7 +9,7 @@
   <div style="text-align: center">
     <h5>Add Guide</h5>
   </div>
-  <form class="form-horizontal needs-validation" style="margin-top: 40px;" action="/admin/guide" method="POST" id="add_myForm" >
+  <form class="form-horizontal needs-validation" style="margin-top: 40px;" action="/admin/guide" method="POST" id="add_myForm" enctype="multipart/form-data">
     <div class="row">
       <div class="col-md-2">
         <div><label for="message-text" class="col-form-label">Forestry type</label></div>
@@ -55,7 +55,17 @@
       <label for="symptoms" class="col-form-label">Symptoms</label>
       <textarea class="form-control" name="symptoms" id="symptoms"></textarea>
     </div>
+
+    <!-- add image -->
+   <div class="row">
+    <div class="col-md-6">
+    <label for="symptoms" class="col-form-label">Upload image</label>
+      <div class="mb-3">
+        <input type="file" class="form-control" name="fileimg" id="fileimg">
+      </div>
     </div>
+   </div>
+
     <div class="form-check" style="padding:35px 25px">
       <input type="checkbox" class="form-check-input" id="inlineFormCheck" required>
       <label class="form-check-label" for="inlineFormCheck">Check me out</label>
@@ -63,6 +73,8 @@
     <div style="text-align: center; padding:10px">
         <button type="submit" class="btn btn-primary" name="add" value="add">Submit</button>
     </div>
+  </div>
+
   </form>
 </div>
 </div>

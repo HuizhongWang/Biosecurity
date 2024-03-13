@@ -7,8 +7,7 @@
 {% block content %}
 {% for detail in detail_list %}
 <div style="text-align:center">
-  <button type="button" class="btn btn-primary" onclick="Values('{{ detail[0] }}','{{ detail[3]|urlencode }}','{{ detail[4]|urlencode }}','{{ detail[5]|urlencode }}','{{ detail[6]|urlencode }}','{{ detail[7]|urlencode }}')" data-bs-toggle="modal" data-bs-target="#exampleModal{{ detail[0] }}">Edit</button>
-  <button type="button" class="btn btn-primary" onclick="Valuesdel('{{ detail[0] }}')" data-bs-toggle="modal" data-bs-target="#deletemodel{{ detail[0] }}" >Delete</button>
+  <button type="button" class="btn btn-primary" onclick="Values('{{ detail[0] }}','{{ detail[3]|urlencode }}','{{ detail[4]|urlencode }}','{{ detail[5]|urlencode }}','{{ detail[6]|urlencode }}','{{ detail[7]|urlencode }}')" data-bs-toggle="modal" data-bs-target="#exampleModal{{ detail[0] }}">Edit the content</button>
 </div>
 <table class="table table-striped">
     <thead>
@@ -19,7 +18,7 @@
         <th scope="col">Common Name</th>
         <th scope="col">Scientific name</th>
         <th scope="col">Primary Image</th>
-        <th scope="col">Click the images to edit⬇️</th>
+        <th scope="col">Click to edit the images ⬇️</th>
       </tr>
     </thead>
     <tbody>
@@ -30,7 +29,7 @@
         <td>{{detail[3]}}</td>
         <td>{{detail[4]}}</td>
         <td>
-          <img class="img-rounded" src="../static/{{ detail[8] }}" width=auto height="200px">
+          <img class="img-rounded" src="../static/imgdata/{{detail[8]}}" width=auto height="200px">
         </td>
         <td>
           <div style="height:50px">
@@ -39,7 +38,7 @@
               <div class="carousel-inner ">
                 {% for images in image_list %}
                 <div class="carousel-item active">
-                  <img class="mx-auto d-block" width=auto height="200px" onclick="Valuesimg('{{ images[0] }}','{{ images[1] }}','{{ images[0] }}','{{ images[1] }}')"  src="../static/{{ images[2] }}" data-bs-toggle="modal" data-bs-target="#imgmodal{{ detail[0] }}">
+                  <img class="mx-auto d-block" width=auto height="200px" onclick="Valuesimg('{{ images[0] }}','{{ images[1] }}','{{ images[0] }}','{{ images[1] }}')"  src="../static/imgdata/{{ images[2] }}" data-bs-toggle="modal" data-bs-target="#imgmodal{{ detail[0] }}">
                 </div>
                 {% endfor %}
               </div>
@@ -148,29 +147,6 @@
   </div>
 </div>
 
-
-<!-- Modal delete-->
-<div class="modal fade" id="deletemodel{{ detail[0] }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Delete the detail</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Do you want to delete this detail?
-      </div>
-      <form class="form-horizontal" style="margin-top: 40px;" action="/admin/detail" method="POST" id="myForm1">
-        <input type="hidden" class="form-control" name="id" id="id">
-      </form>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary" form="myForm1" name="delete" value="delete">Delete</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- Modal image change-->
 <div class="modal fade" id="imgmodal{{ detail[0] }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -200,7 +176,6 @@
 
 {% endfor %}
 
-
 <script>
   // get the radio
   const radioButtonsGroup1 = document.querySelectorAll('input[name="group1"]');  // type
@@ -208,7 +183,7 @@
   
   radioButtonsGroup1.forEach(function(radioButton) {
     radioButton.addEventListener('change', function(event) {
-      // get the value of the radiao
+      // get the value of the radio
       const selectedValue = document.querySelector('input[name="group1"]:checked').value;
       console.log('Selected value of group 1:', selectedValue);
     });
@@ -216,7 +191,7 @@
 
   radioButtonsGroup2.forEach(function(radioButton) {
     radioButton.addEventListener('change', function(event) {
-      // get the value of the radiao
+      // get the value of the radio
       const selectedValue = document.querySelector('input[name="group2"]:checked').value;
       console.log('Selected value of group 2:', selectedValue);
     });
@@ -237,11 +212,6 @@
     document.getElementById("key").value = key;
     document.getElementById("biology").value = biology;
     document.getElementById("symptoms").value = symptoms;
-}
-
-// get the info when delete
-function Valuesdel(id) {
-    document.getElementById("id").value = id;
 }
 
 // get the info when edit images

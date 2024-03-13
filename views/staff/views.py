@@ -77,7 +77,7 @@ def s_index():
                     file_img.save(file_path)
                     connection.execute("select images from images where forestry_id=%s",(forid,))
                     images = connection.fetchall() 
-                    if images:   # the forestry already have images
+                    if images[0][0]!=None:   # the forestry already have images
                         connection.execute("insert into images (forestry_id,images) values (%s,%s)", (forid,file_name,))
                     else:
                         connection.execute("update images set images=%s where forestry_id=%s", (file_name,forid,))
@@ -128,7 +128,7 @@ def s_guide():
                 if "fileimg" in request.files:
                     file_img = request.files.get("fileimg")
                     file_name = file_img.filename
-                    file_path = "../static/imgdata/" + file_name
+                    file_path = "/Users/doubleluo/Documents/GitHub/Biosecurity/static/imgdata/" + file_name
                     file_img.save(file_path)
                     connection.execute("insert into images (forestry_id,images,show_p) values (%s,%s,1)", (forid,file_name,))
                 else:
@@ -164,12 +164,6 @@ def s_detail():
                     forestry_type=%s,present_in_nz=%s,common_name=%s,scientific_name=%s,
                     key_charac=%s, biology=%s, symptoms=%s where forestry_id=%s""",(type,present,common,scientific,key,bio,symptoms,forid,))  
                 flash("Update successfully!","success")
-
-            # delete the detail 
-            elif request.values.get("delete") == "delete":
-                forid= request.form.get("id")
-                connection.execute("delete from forestry where forestry_id=%s",(forid,))  
-                flash("Delete successfully!","success")
 
             # change picture
             elif request.values.get("save") == "save":
