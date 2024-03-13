@@ -128,7 +128,7 @@ def s_guide():
                 if "fileimg" in request.files:
                     file_img = request.files.get("fileimg")
                     file_name = file_img.filename
-                    file_path = "/Users/doubleluo/Documents/GitHub/Biosecurity/static/imgdata/" + file_name
+                    file_path = "../static/imgdata/" + file_name
                     file_img.save(file_path)
                     connection.execute("insert into images (forestry_id,images,show_p) values (%s,%s,1)", (forid,file_name,))
                 else:
