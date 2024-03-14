@@ -18,11 +18,6 @@ def getCursor():
     dbconn = connection.cursor()
     return dbconn
 
-# close database
-def colseCursor():
-     dbconn.close()
-     connection.close()
-
 # upload images format setting
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -65,7 +60,7 @@ def s_index():
 
         connection.execute("select count(*) from forestry;")
         total = connection.fetchone()[0]   
-        total_pages = total // per_page + (1 if total % per_page > 0 else 0)
+        total_pages = total // per_page + (1 if total % per_page > 0 else 0)  # calculate the total pages
 
         if request.method == 'GET':    
             return render_template("staff/guide.html",guide_list=guide_list,page=page,total_pages=total_pages)

@@ -16,7 +16,6 @@ def getCursor():
     dbconn = connection.cursor()
     return dbconn
 
-
 # upload images format setting
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 

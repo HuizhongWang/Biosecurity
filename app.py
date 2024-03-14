@@ -31,6 +31,11 @@ def getCursor():
     dbconn = connection.cursor()
     return dbconn
 
+# close database
+def colseCursor():
+     dbconn.close()
+     connection.close()
+
 
 @app.route("/")
 def home():
@@ -127,6 +132,8 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop("userid", None) 
+    getCursor()
+    colseCursor()
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
