@@ -23,6 +23,13 @@ def colseCursor():
      dbconn.close()
      connection.close()
 
+# upload images format setting
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+# check the format of the file is an image
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 # get forestry data
 def forestry_get(forestry_id):
     global detail_list,image_list
@@ -70,7 +77,7 @@ def s_index():
                 if file_img.filename == '':
                     flash("No selected file. Fail to add the image","danger")
                     return redirect(url_for('staff.s_index'))
-                if "fileimg" in request.files:
+                if "fileimg" in request.files and allowed_file(file_img.filename):
                     file_img = request.files.get("fileimg")
                     file_name = file_img.filename
                     file_path = "/Users/doubleluo/Documents/GitHub/Biosecurity/static/imgdata/" + file_name
@@ -83,7 +90,7 @@ def s_index():
                         connection.execute("update images set images=%s where forestry_id=%s", (file_name,forid,))
                     flash("File saved successfully","success")
                 else:
-                    flash("Fail to save the file","danger")
+                    flash('Invalid file type. Only PNG, JPG, JPEG, and GIF files are allowed.', 'danger')
 
             return redirect(url_for('staff.s_index'))
     else:
@@ -120,22 +127,19 @@ def s_guide():
                         (%s,%s)""",(forid,1))  
                     return render_template("staff/add_guide.html")
                 file_img = request.files.get("fileimg")
+
                 if file_img.filename == '':
-                    connection.execute("""insert into images 
-                        (forestry_id,show_p) values
-                        (%s,%s)""",(forid,1))  
+                    connection.execute("""insert into images(forestry_id,show_p) values(%s,%s)""",(forid,1))  
                     return render_template("staff/add_guide.html")
-                if "fileimg" in request.files:
+                if "fileimg" in request.files and allowed_file(file_img.filename):
                     file_img = request.files.get("fileimg")
                     file_name = file_img.filename
                     file_path = "/Users/doubleluo/Documents/GitHub/Biosecurity/static/imgdata/" + file_name
                     file_img.save(file_path)
                     connection.execute("insert into images (forestry_id,images,show_p) values (%s,%s,1)", (forid,file_name,))
                 else:
-                    flash("Fail to save the image","danger")
-                    connection.execute("""insert into images 
-                        (forestry_id,show_p) values
-                        (%s,%s)""",(forid,1))  
+                    flash('But fail to add the file. Invalid file type. Only PNG, JPG, JPEG, and GIF files are allowed.', 'danger')
+                    connection.execute("""insert into images(forestry_id,show_p) values(%s,%s)""",(forid,1))  
             
             return render_template("staff/add_guide.html")
 
