@@ -22,11 +22,30 @@
         <td>{{guide[3]}}</td>
         <td>
             <form action="/foreseter/f_detail" method="get">
-              <a href="{{ url_for('forester.f_detail',forestry_id=guide[0])}}"><img class="img-rounded" src="../static/{{ guide[4] }}" width=auto height="30px"></a>
+              <a href="{{ url_for('forester.f_detail',forestry_id=guide[0])}}"><img class="img-rounded" src="../static/imgdata/{{ guide[4] }}" width=auto height="30px"></a>
             </form>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+
+  <nav class="pagination-container d-flex justify-content-center" aria-label="Page navigation example">
+    <ul class="pagination">
+      <li class="page-item {% if page == 1 %} disabled {% endif %}">
+        <a class="page-link" href="?page={{ page-1 }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% for p in range(1, total_pages +1) %}
+      <li class="page-item {% if page == p %} active {% endif %}"><a class="page-link" href="?page={{p}}">{{p}}</a></li>
+      {% endfor %}
+      
+      <li class="page-item {% if page == total_pages or total_page == 0 %}disabled {% endif %}">
+        <a class="page-link" href="?page={{ page+1 }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 {% endblock %}

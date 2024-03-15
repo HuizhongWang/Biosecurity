@@ -22,15 +22,23 @@ def getCursor():
 def f_index():
     if session['userid'] and session['role'] == "forester" and session['status']== 1:
         connection = getCursor()
+        # page setting
+        page = request.args.get("page",1,type=int) 
+        per_page = 10
+        offset = (page -1) * per_page
         connection.execute("""SELECT f.forestry_id,f.forestry_type,
             case when f.present_in_nz = 1 then "yes" when f.present_in_nz=0 then "no" ELSE 'null' END
             ,f.common_name,i.images
             FROM forestry f left join images i
             on f.forestry_id = i.forestry_id
-            where i.show_p = 1""")
+            where i.show_p = 1 order by f.forestry_id limit %s offset %s""",(per_page,offset,))
         guide_list= connection.fetchall()   
+
+        connection.execute("select count(*) from forestry;")
+        total = connection.fetchone()[0]   
+        total_pages = total // per_page + (1 if total % per_page > 0 else 0)  # calculate the total pages
         
-        return render_template("forester/guide.html",guide_list=guide_list)
+        return render_template("forester/guide.html",guide_list=guide_list,page=page,total_pages=total_pages)
 
     else:
         return redirect(url_for('login'))
