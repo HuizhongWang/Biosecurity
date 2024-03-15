@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS images
 (
 image_num INT auto_increment PRIMARY KEY NOT NULL,
 forestry_id INT NOT NULL,
-images mediumblob,
+images text,
 show_p tinyint default 0,
 FOREIGN KEY (forestry_id) REFERENCES forestry(forestry_id)
 on update cascade
